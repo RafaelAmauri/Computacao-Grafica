@@ -1,8 +1,11 @@
 import matplotlib.pyplot as plt
+import translation
 
+
+# Displays a figure with its coordinates labeled. Nothing too fancy
 def show_figure(original_figure: dict, new_figure:dict=None):
-    plt.ylim(bottom=-30, top=30)
-    plt.xlim(left=-30, right=30)
+    plt.ylim(bottom=-50, top=50)
+    plt.xlim(left=-50, right=50)
 
 
     plt.plot(original_figure["x"], original_figure["y"], 'ro-')
@@ -16,3 +19,14 @@ def show_figure(original_figure: dict, new_figure:dict=None):
 
     plt.show()
     plt.clf()
+
+
+# Sets a figure's starting position to (0,0). Please, make sure the first point is the one 
+# closest to (0,0) and also make sure that the point's coordinates are equals. Example: (2,2), (3,3), (100,100), etc
+def move_to_origin(figure:dict):
+    new_figure = figure.copy()
+    
+    new_figure = translation.translation2d(new_figure, axis="x", x_padding=new_figure["x"][0]*-1)
+    new_figure = translation.translation2d(new_figure, axis="y", y_padding=new_figure["y"][0]*-1)
+
+    return new_figure
