@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 
 def translation2d(figure: list, **kwargs):
     axis      = kwargs.get("axis", None)
