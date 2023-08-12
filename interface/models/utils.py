@@ -1,6 +1,4 @@
 import PySimpleGUI as sg
-from models import keys
-
 
 def create_popup_one_button(window_name: str, msg_txt: str, button_txt: str):
     sg.Window(window_name,

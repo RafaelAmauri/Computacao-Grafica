@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from models import keys
+from interface.models import keys
 
 class ConfigModel:
     def __init__(self) -> None:
