@@ -1,3 +1,3 @@
 from interface import front
 
-front.main()
+front.drawGUI()

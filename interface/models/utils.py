@@ -1,9 +1,9 @@
 import PySimpleGUI as sg
 
-def create_popup_one_button(window_name: str, msg_txt: str, button_txt: str):
-    sg.Window(window_name,
+def createPopupOneButton(windowName: str, msgTxt: str, buttonTxt: str):
+    sg.Window(windowName,
                     [
-                        [sg.Text(msg_txt)],
-                        [sg.Button(button_txt)]
+                        [sg.Text(msgTxt)],
+                        [sg.Button(buttonTxt)]
                     ],
                     element_justification='c').read(close=True)
