@@ -19,9 +19,9 @@ def chooseColor(previousColor):
     blue  = int(previousColor[5:7], base=16)
 
     middle = [
-            [sg.Slider(range=(0,255), default_value=red, orientation='horizontal', key=keys.CHOOSE_COLOR_RED_SLIDER_KEY, enable_events=True)],
+            [sg.Slider(range=(0,255), default_value=red,   orientation='horizontal', key=keys.CHOOSE_COLOR_RED_SLIDER_KEY,   enable_events=True)],
             [sg.Slider(range=(0,255), default_value=green, orientation='horizontal', key=keys.CHOOSE_COLOR_GREEN_SLIDER_KEY, enable_events=True)],
-            [sg.Slider(range=(0,255), default_value=blue, orientation='horizontal', key=keys.CHOOSE_COLOR_BLUE_SLIDER_KEY, enable_events=True)]
+            [sg.Slider(range=(0,255), default_value=blue,  orientation='horizontal', key=keys.CHOOSE_COLOR_BLUE_SLIDER_KEY,  enable_events=True)]
         ]
 
     rightSide = [
@@ -37,6 +37,8 @@ def chooseColor(previousColor):
 
     screen = sg.Window('Choose color', layout, element_justification='c', finalize=True)
 
+    float2Hex = lambda x: hex(int(x))[2:] if x > 16 else f"{hex(int(x))[2:]}0"
+    
     while True:
         event, values = screen.read()
 
@@ -45,8 +47,6 @@ def chooseColor(previousColor):
             break
         
         elif event in [keys.CHOOSE_COLOR_RED_SLIDER_KEY, keys.CHOOSE_COLOR_GREEN_SLIDER_KEY, keys.CHOOSE_COLOR_BLUE_SLIDER_KEY]:
-            float2Hex = lambda x: hex(int(x))[2:] if x > 16 else f"{hex(int(x))[2:]}0"
-
             red_slider   = float2Hex(values[keys.CHOOSE_COLOR_RED_SLIDER_KEY])
             green_slider = float2Hex(values[keys.CHOOSE_COLOR_GREEN_SLIDER_KEY])
             blue_slider  = float2Hex(values[keys.CHOOSE_COLOR_BLUE_SLIDER_KEY])
@@ -54,22 +54,6 @@ def chooseColor(previousColor):
             color = f"#{red_slider}{green_slider}{blue_slider}"
 
             graph.draw_rectangle((0,0),(50,50), fill_color=color)
-
-
-    '''
-    Feio ter que fazer a função lambda de novo, mas pode ser que o usuário só escolha uma cor sem fazer
-    a preview, e a gente precisa fazer essa conta pelo menos uma vez. A alternativa é fazer 
-    isso já dentro do loop, mas isso piora a performance porque senão essa conta vai ser feita 
-    a cada frame draw, ou seja, a cada vez que o user mexer no slider, etc.
-    Da forma que está agora o custo é bem baixo: O(N+1), com N = numero de vezes que o user 
-    renderiza uma cor.
-    '''
-    float2Hex = lambda x: hex(int(x))[2:] if x > 16 else f"{hex(int(x))[2:]}0"
-
-    red_slider   = float2Hex(values[keys.CHOOSE_COLOR_RED_SLIDER_KEY])
-    green_slider = float2Hex(values[keys.CHOOSE_COLOR_GREEN_SLIDER_KEY])
-    blue_slider  = float2Hex(values[keys.CHOOSE_COLOR_BLUE_SLIDER_KEY])
-
-    color = f"#{red_slider}{green_slider}{blue_slider}"
+            
 
     return color
