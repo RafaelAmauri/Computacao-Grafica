@@ -18,8 +18,8 @@ def drawGUI():
 
     # TODO Check if text in fields is a number
 
-    # Cor default é vermelho
-    color = "#ff0000"
+    # Cor default é preto
+    color = "#000000"
 
     while True:
         event, values = window.read()
@@ -42,8 +42,16 @@ def drawGUI():
 
         
         elif event == keys.MENU_SELECT_COLOR_KEY:
-            color = choose_color.chooseColor()
-            
+            color = choose_color.chooseColor(previousColor=color)
+
+
+        elif event == keys.MENU_ERASE_KEY:
+            color = "#ffffff"
+            utils.createPopupOneButton(windowName="Apagar",
+                                        msgTxt="Borracha selecionada!",
+                                        buttonTxt="Ok!"
+            )
+
 
         elif event == keys.MENU_CLOSE_KEY:
             break
