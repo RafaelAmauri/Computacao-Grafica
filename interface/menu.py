@@ -25,12 +25,12 @@ def drawGUI():
 
     # Check config for default values
     userColor           = config.defaultUserColor
-    userTransformations = config.defaultUserTransformations
 
     points = {
                 "x": [],
                 "y": []
     }
+    usedColors = []
 
 
     while True:
@@ -57,7 +57,9 @@ def drawGUI():
                                point_to=(clickedX, clickedY),
                                color=userColor
                             )
-            
+
+            usedColors.append(userColor)
+
             points["x"].append(clickedX)
             points["y"].append(clickedY)
                 
@@ -77,11 +79,13 @@ def drawGUI():
 
                 # Se não for primeiro ponto, desenhar linha
                 if len(points["x"]) > 0:
-                    graph.DrawLine(point_from=(points["X"][-1], points["Y"][-1]),
+                    graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
                                     point_to=(clickedX, clickedY),
                                     color=userColor
                                 )
-                
+                    usedColors.append(userColor)
+
+
                 points["x"].append(values[keys.X1_COORDINATES_BUTTON_KEY])
                 points["y"].append(values[keys.Y1_COORDINATES_BUTTON_KEY])
         
@@ -89,7 +93,6 @@ def drawGUI():
         # Clicked on select color button
         elif event == keys.MENU_SELECT_COLOR_KEY:
             userColor = choose_color.chooseColor(previousColor=userColor)
-
 
         # Clicked on erase button
         elif event == keys.MENU_ERASE_KEY:
@@ -107,42 +110,51 @@ def drawGUI():
 
             points["x"] = []
             points["y"] = []
-
-
-        # Clicked on select transformation button
-        elif event == keys.MENU_SELECT_TRANSFORMATION_KEY:
-            userTransformations = choose_transformation.chooseTransformation(previousChoices=userTransformations)
-            window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
+            usedColors  = []
 
         
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
-            utils.clearCanvas(graph, config)
+            axisUserChoice   = values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY].lower()
             
-            if userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Translação":
+            try:
+                factorUserChoice = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY])
+                angleUserChoice  = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_ANGLE_KEY])
+            except ValueError:
+                utils.createPopupOneButton(windowName="Error", 
+                                            msgTxt="Por favor, apenas números nos valores \"Fator\" e \"Ângulo\"!", 
+                                            buttonTxt="Ok!")
+                continue
+
+            utils.clearCanvas(graph, config)
+
+            if values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Translação":
                 points = translation.translation2d(figure=points,
-                                                    axis=userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY],
-                                                    x_padding=userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY],
-                                                    y_padding=userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY]
+                                                    axis=axisUserChoice,
+                                                    x_padding=factorUserChoice,
+                                                    y_padding=factorUserChoice
                 )
 
-            elif userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Escala":
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Escala":
                 points = scale.scale2d(figure=points,
-                                        axis=userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY],
-                                        x_scale=userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY],
-                                        y_scale=userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY]
+                                        axis=axisUserChoice,
+                                        x_scale=factorUserChoice,
+                                        y_scale=factorUserChoice
                                         )
-            elif userTransformations[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Rotação":
-                pass
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Rotação":
+                points = rotation.rotation2d(figure=points,
+                                            direction="clockwise",
+                                            angle=angleUserChoice
+                )
             
 
-            for idx, (tempX, tempY) in enumerate(zip(points["x"], points["y"])):
-                graph.DrawPoint((tempX, tempY), 10, color=userColor)
+            for idx, (tempX, tempY, tempColor) in enumerate(zip(points["x"], points["y"], usedColors)):
+                graph.DrawPoint((tempX, tempY), 10, color=tempColor)
 
                 if idx != 0:
                     graph.DrawLine(point_from=(points["x"][idx-1], points["y"][idx-1]),
                                     point_to=(points["x"][idx], points["y"][idx]),
-                                    color=userColor
+                                    color=tempColor
                                 )
 
     window.close()

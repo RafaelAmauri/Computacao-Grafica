@@ -30,6 +30,7 @@ def chooseTransformation(previousChoices):
         if event == sg.WIN_CLOSED or event == keys.CHOOSE_TRANSFORMATION_APPLY_KEY:
             screen.close()
             break
+        
     
     values[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY] = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY])
     if values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY] == "Ambos":

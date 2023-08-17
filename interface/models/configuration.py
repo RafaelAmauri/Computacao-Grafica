@@ -3,12 +3,20 @@ from interface.models import keys
 
 class ConfigModel:
     def __init__(self) -> None:
-        self.buttonSize     = (40, 1)
+        self.textBoxSize    = (10, 1)
         self.inputboxSize   = (10, 1)
+        self.buttonSize     = (20, 1)
         self.canvasSize     = (500,500)
 
         self.defaultBgColor   = "#ffffff"
         self.defaultUserColor = "#000000"
+        
+        self.transformationOptions = [
+                    ["Transformação", ["Translação", "Escala", "Rotação"]],
+                    ["Eixo", ["X", "Y", "Ambos"]],
+                    ["Fator da Transformação"],
+                    ["Angulo de Rotação"]
+        ]
 
         self.defaultUserTransformations = {
                                     keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY: "Translação",
@@ -20,19 +28,41 @@ class ConfigModel:
                 [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(0,0), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
         ]
 
+        self.layoutMiddle1 = [
+                [sg.Text(keys.X1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.X1_COORDINATES_BUTTON_KEY)],
+                [sg.HSeparator()],
+                [sg.Button(keys.MENU_DRAW_PIXEL_TEXT, key=keys.MENU_DRAW_PIXEL_KEY, size=self.buttonSize)],
+                [sg.Button(keys.MENU_ERASE_TEXT, key=keys.MENU_ERASE_KEY, size=self.buttonSize)],
+                ]
+
+        self.layoutMiddle2 = [
+            [sg.Text(keys.Y1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.Y1_COORDINATES_BUTTON_KEY)],
+            [sg.HSeparator()],
+            [sg.Button(keys.MENU_SELECT_COLOR_TEXT, key=keys.MENU_SELECT_COLOR_KEY, size=self.buttonSize)],
+            [sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY, size=self.buttonSize)],
+            [sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, size=self.buttonSize)]
+        ]
+
         self.layoutRight1 = [
-                [sg.Text(keys.X1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.X1_COORDINATES_BUTTON_KEY), sg.Text(keys.Y1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.Y1_COORDINATES_BUTTON_KEY)],
-                [sg.Text(keys.X2_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.X2_COORDINATES_BUTTON_KEY), sg.Text(keys.Y2_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.Y2_COORDINATES_BUTTON_KEY)],
-            ]
+                [sg.Text(self.transformationOptions[0][0], pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(self.transformationOptions[1][0], pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(self.transformationOptions[2][0], pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(self.transformationOptions[3][0], pad=(self.textBoxSize,self.textBoxSize))]
+        ]
 
         self.layoutRight2 = [
-                [sg.Button(keys.MENU_DRAW_PIXEL_TEXT, key=keys.MENU_DRAW_PIXEL_KEY), sg.Button(keys.MENU_SELECT_COLOR_TEXT, key=keys.MENU_SELECT_COLOR_KEY)],
-                [sg.Button(keys.MENU_CLOSE_TEXT, key=keys.MENU_CLOSE_KEY), sg.Button(keys.MENU_ERASE_TEXT, key=keys.MENU_ERASE_KEY), sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY)],
-                [sg.Button(keys.MENU_SELECT_TRANSFORMATION_TEXT, key=keys.MENU_SELECT_TRANSFORMATION_KEY), sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, disabled=True)]
+            [sg.OptionMenu(values = (self.transformationOptions[0][1]), size=self.inputboxSize, default_value=self.transformationOptions[0][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY)],
+            [sg.OptionMenu(values = (self.transformationOptions[1][1]), size=self.inputboxSize, default_value=self.transformationOptions[1][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY)],
+            [sg.InputText(size=self.inputboxSize, default_text="2.0", key=keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY)],
+            [sg.InputText(size=self.inputboxSize, default_text="90.0", key=keys.CHOOSE_TRANSFORMATION_OPTION_ANGLE_KEY)]
+        ]
+
+        self.layoutBottom = [
+            [sg.Button(keys.MENU_CLOSE_TEXT, key=keys.MENU_CLOSE_KEY),]
         ]
 
         self.layoutScreen = [
-            [sg.vtop(sg.Column(self.layoutLeft)), sg.VSeparator(), sg.vtop(sg.Column(self.layoutRight1)), sg.VSeparator(), sg.vtop(sg.Column(self.layoutRight2))]
+            [sg.vtop(sg.Column(self.layoutLeft)), sg.VSeparator(), sg.vtop(sg.Column(self.layoutMiddle1)), sg.vtop(sg.Column(self.layoutMiddle2)), sg.VSeparator(), sg.vtop(sg.Column(self.layoutRight1)), sg.vtop(sg.Column(self.layoutRight2)), sg.vbottom(sg.Column(self.layoutBottom))]
         ]
     
 
