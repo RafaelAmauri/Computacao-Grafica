@@ -60,8 +60,10 @@ def drawGUI():
 
             usedColors.append(userColor)
 
-            points["x"].append(clickedX)
-            points["y"].append(clickedY)
+            points["x"].append(float(clickedX))
+            points["y"].append(float(clickedY))
+
+            window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
                 
 
         # Clicked on Draw Pixel button
@@ -72,22 +74,26 @@ def drawGUI():
                                             buttonTxt="Ok!")
 
             else:
+                selectedX = float(values[keys.X1_COORDINATES_BUTTON_KEY])
+                selectedY = float(values[keys.Y1_COORDINATES_BUTTON_KEY])
 
-                graph.DrawPoint((int(values[keys.X1_COORDINATES_BUTTON_KEY]), int(values[keys.Y1_COORDINATES_BUTTON_KEY])), 10, color=userColor)
+                graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
 
-                print(f"Drawed pixel on {values[keys.X1_COORDINATES_BUTTON_KEY]}, {values[keys.Y1_COORDINATES_BUTTON_KEY]}")
+                print(f"Drawed pixel on {selectedX}, {selectedY}")
 
                 # Se não for primeiro ponto, desenhar linha
                 if len(points["x"]) > 0:
                     graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
-                                    point_to=(clickedX, clickedY),
+                                    point_to=(selectedX, selectedY),
                                     color=userColor
                                 )
-                    usedColors.append(userColor)
+                                
+                usedColors.append(userColor)
 
+                points["x"].append(selectedX)
+                points["y"].append(selectedY)
 
-                points["x"].append(values[keys.X1_COORDINATES_BUTTON_KEY])
-                points["y"].append(values[keys.Y1_COORDINATES_BUTTON_KEY])
+                window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
         
 
         # Clicked on select color button
@@ -108,6 +114,8 @@ def drawGUI():
         elif event == keys.MENU_ERASE_ALL_KEY:
             utils.clearCanvas(graph, config)
 
+            window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=True)
+
             points["x"] = []
             points["y"] = []
             usedColors  = []
@@ -115,7 +123,7 @@ def drawGUI():
         
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
-            axisUserChoice   = values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY].lower()
+            axisUserChoice = values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY] in ["X", "Y"] else "both"
             
             try:
                 factorUserChoice = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY])
@@ -149,8 +157,10 @@ def drawGUI():
                                             angle=rotationAngleUserChoice
                 )
             elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Cisalinhamento":
-                print("Not done yet!")
-                pass
+                points = shear.shear2d(figure=points,
+                                        axis=axisUserChoice,
+                                        factor=factorUserChoice
+                )
             
 
             for idx, (tempX, tempY, tempColor) in enumerate(zip(points["x"], points["y"], usedColors)):

@@ -10,13 +10,13 @@ def scale2d(figure: list, **kwargs):
     new_figure = figure.copy()
     new_figure = graphics_utils.move_to_origin(new_figure)
 
-    if axis in ["x", "ambos"]:
+    if axis in ["x", "both"]:
         if x_scale > 1:
             new_figure["x"] = [x*x_scale for x in new_figure["x"]]
         else:
             new_figure["x"] = [x*x_scale for x in new_figure["x"]]
 
-    if axis in ["y", "ambos"]:
+    if axis in ["y", "both"]:
         if y_scale > 1:
             new_figure["y"] = [y*y_scale for y in new_figure["y"]]
         else:
