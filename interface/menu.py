@@ -119,7 +119,9 @@ def drawGUI():
             
             try:
                 factorUserChoice = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY])
-                angleUserChoice  = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_ANGLE_KEY])
+                rotationAngleUserChoice  = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_ANGLE_KEY])
+                rotationDirectionUserChoice = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
+
             except ValueError:
                 utils.createPopupOneButton(windowName="Error", 
                                             msgTxt="Por favor, apenas números nos valores \"Fator\" e \"Ângulo\"!", 
@@ -143,9 +145,12 @@ def drawGUI():
                                         )
             elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Rotação":
                 points = rotation.rotation2d(figure=points,
-                                            direction="clockwise",
-                                            angle=angleUserChoice
+                                            direction=rotationDirectionUserChoice,
+                                            angle=rotationAngleUserChoice
                 )
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Cisalinhamento":
+                print("Not done yet!")
+                pass
             
 
             for idx, (tempX, tempY, tempColor) in enumerate(zip(points["x"], points["y"], usedColors)):

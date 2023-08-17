@@ -12,10 +12,11 @@ class ConfigModel:
         self.defaultUserColor = "#000000"
         
         self.transformationOptions = [
-                    ["Transformação", ["Translação", "Escala", "Rotação"]],
+                    ["Operação", ["Translação", "Escala", "Rotação"]],
                     ["Eixo", ["X", "Y", "Ambos"]],
                     ["Fator da Transformação"],
-                    ["Angulo de Rotação"]
+                    ["Angulo de Rotação"],
+                    ["Direção da Rotação", ["Horário", "Anti-Horário"]]
         ]
 
         self.defaultUserTransformations = {
@@ -47,14 +48,16 @@ class ConfigModel:
                 [sg.Text(self.transformationOptions[0][0], pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(self.transformationOptions[1][0], pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(self.transformationOptions[2][0], pad=(self.textBoxSize,self.textBoxSize))],
-                [sg.Text(self.transformationOptions[3][0], pad=(self.textBoxSize,self.textBoxSize))]
+                [sg.Text(self.transformationOptions[3][0], pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(self.transformationOptions[4][0], pad=(self.textBoxSize,self.textBoxSize))]
         ]
 
         self.layoutRight2 = [
-            [sg.OptionMenu(values = (self.transformationOptions[0][1]), size=self.inputboxSize, default_value=self.transformationOptions[0][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY)],
-            [sg.OptionMenu(values = (self.transformationOptions[1][1]), size=self.inputboxSize, default_value=self.transformationOptions[1][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY)],
-            [sg.InputText(size=self.inputboxSize, default_text="2.0", key=keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY)],
-            [sg.InputText(size=self.inputboxSize, default_text="90.0", key=keys.CHOOSE_TRANSFORMATION_OPTION_ANGLE_KEY)]
+            [sg.OptionMenu(values=(self.transformationOptions[0][1]), size=self.inputboxSize, default_value=self.transformationOptions[0][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY)],
+            [sg.OptionMenu(values=(self.transformationOptions[1][1]), size=self.inputboxSize, default_value=self.transformationOptions[1][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY)],
+            [sg.InputText(size=self.inputboxSize, default_text="10.0", key=keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY)],
+            [sg.InputText(size=self.inputboxSize, default_text="90.0", key=keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_ANGLE_KEY)],
+            [sg.OptionMenu(values=(self.transformationOptions[4][1]), size=self.inputboxSize, default_value=self.transformationOptions[4][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_DIRECTION_KEY)]
         ]
 
         self.layoutBottom = [
