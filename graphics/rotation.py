@@ -1,5 +1,6 @@
 import math
-import translation, utils
+from graphics import graphics_utils
+from graphics import translation
 
 
 def rotation2d(figure: list, **kwargs):
@@ -8,7 +9,7 @@ def rotation2d(figure: list, **kwargs):
     angle     = angle * math.pi / 180
 
     new_figure = figure.copy()
-    new_figure = utils.move_to_origin(new_figure)
+    new_figure = interface_utils.move_to_origin(new_figure)
 
     new_x = []
     new_y = []

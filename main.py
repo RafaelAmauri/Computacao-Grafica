@@ -1,3 +1,3 @@
-from interface import front
+from interface import menu
 
-front.drawGUI()
+menu.drawGUI()

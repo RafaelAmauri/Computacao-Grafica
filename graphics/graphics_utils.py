@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import translation
+from graphics import translation
 
 
 # Displays a figure with its coordinates labeled. Nothing too fancy
@@ -25,8 +25,6 @@ def show_figure(original_figure: dict, new_figure:dict=None):
 # closest to (0,0) and also make sure that the point's coordinates are equals. Example: (2,2), (3,3), (100,100), etc
 def move_to_origin(figure:dict):
     new_figure = figure.copy()
-    
     new_figure = translation.translation2d(new_figure, axis="x", x_padding=new_figure["x"][0]*-1)
     new_figure = translation.translation2d(new_figure, axis="y", y_padding=new_figure["y"][0]*-1)
-
     return new_figure

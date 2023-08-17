@@ -1,4 +1,3 @@
-
 def translation2d(figure: list, **kwargs):
     axis      = kwargs.get("axis", None)
     x_padding = kwargs.get("x_padding", None)

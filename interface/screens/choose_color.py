@@ -38,7 +38,7 @@ def chooseColor(previousColor):
     screen = sg.Window('Choose color', layout, element_justification='c', finalize=True)
 
     float2Hex = lambda x: hex(int(x))[2:] if x > 16 else f"{hex(int(x))[2:]}0"
-    
+
     while True:
         event, values = screen.read()
 
@@ -54,6 +54,6 @@ def chooseColor(previousColor):
             color = f"#{red_slider}{green_slider}{blue_slider}"
 
             graph.draw_rectangle((0,0),(50,50), fill_color=color)
-            
+
 
     return color
