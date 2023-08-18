@@ -11,16 +11,10 @@ def scale2d(figure: list, **kwargs):
     new_figure = graphics_utils.move_to_origin(new_figure)
 
     if axis in ["x", "both"]:
-        if x_scale > 1:
-            new_figure["x"] = [x*x_scale for x in new_figure["x"]]
-        else:
-            new_figure["x"] = [x*x_scale for x in new_figure["x"]]
+        new_figure["x"] = [x*x_scale for x in new_figure["x"]]
 
     if axis in ["y", "both"]:
-        if y_scale > 1:
-            new_figure["y"] = [y*y_scale for y in new_figure["y"]]
-        else:
-            new_figure["y"] = [y*y_scale for y in new_figure["y"]]
+        new_figure["y"] = [y*y_scale for y in new_figure["y"]]
 
 
     new_figure  = translation.translation2d(new_figure, axis="x", x_padding=figure["x"][0])

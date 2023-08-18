@@ -55,7 +55,7 @@ class ConfigModel:
         self.layoutRight2 = [
             [sg.OptionMenu(values=(self.transformationOptions[0][1]), size=self.inputboxSize, default_value=self.transformationOptions[0][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY)],
             [sg.OptionMenu(values=(self.transformationOptions[1][1]), size=self.inputboxSize, default_value=self.transformationOptions[1][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY)],
-            [sg.Slider(range=(-10,10), default_value=2.0, resolution=1, orientation="horizontal", key=keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY)],
+            [sg.Slider(range=(-10,10), default_value=2.0, resolution=0.5, orientation="horizontal", key=keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY)],
             [sg.Slider(range=(0,359), default_value=90.0, resolution=1, orientation="horizontal", key=keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_ANGLE_KEY)],
             [sg.OptionMenu(values=(self.transformationOptions[4][1]), size=self.inputboxSize, default_value=self.transformationOptions[4][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_DIRECTION_KEY)]
         ]

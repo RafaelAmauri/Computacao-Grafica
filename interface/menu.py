@@ -14,17 +14,12 @@ def drawGUI():
 
 
     # Create the Window
-    window = sg.Window('Window Title', screens).finalize()
+    window = sg.Window('My Graphics Library', screens).finalize()
     graph = window[keys.MENU_GRAPH_KEY]
 
 
-    # Event Loop to process events and get the values of the inputs
-
-    # TODO Check if text in fields is a number
-    # TODO Implementar todas as transformações geométricas
-
     # Check config for default values
-    userColor           = config.defaultUserColor
+    userColor = config.defaultUserColor
 
     points = {
                 "x": [],
@@ -33,6 +28,7 @@ def drawGUI():
     usedColors = []
 
 
+    # Event Loop to process events and get the values of the inputs
     while True:
         event, values = window.read()
 
@@ -87,7 +83,7 @@ def drawGUI():
                                     point_to=(selectedX, selectedY),
                                     color=userColor
                                 )
-                                
+
                 usedColors.append(userColor)
 
                 points["x"].append(selectedX)

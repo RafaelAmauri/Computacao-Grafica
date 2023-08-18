@@ -1,7 +1,6 @@
 from graphics import graphics_utils, translation
 
 def shear2d(figure: list, **kwargs):
-    # https://www.javatpoint.com/computer-graphics-shearing
 
     axis        = kwargs.get("axis", None)
     shearFactor = kwargs.get("factor", None)
