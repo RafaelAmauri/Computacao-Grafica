@@ -33,7 +33,7 @@ def drawGUI():
         event, values = window.read()
 
         # Clicked on "Exit"
-        if event == keys.MENU_CLOSE_KEY:
+        if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
             break
 
         # Clicked on graph
