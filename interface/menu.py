@@ -1,9 +1,9 @@
 import PySimpleGUI as sg
 
 from interface.models import configuration, keys, utils
-from interface.screens import choose_color, choose_transformation
+from interface.screens import choose_color
 
-from graphics import translation, scale, rotation, shear
+from graphics import translation, scale, rotation, shear, reflection
 
 
 def drawGUI():
@@ -158,6 +158,11 @@ def drawGUI():
                                         axis=axisUserChoice,
                                         factor=factorUserChoice
                 )
+            
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Reflexão":
+                points = reflection.reflection2d(points,
+                                                axis=axisUserChoice
+                                                )
             
 
             for idx, (tempX, tempY, tempColor) in enumerate(zip(points["x"], points["y"], usedColors)):

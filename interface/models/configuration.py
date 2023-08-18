@@ -12,7 +12,7 @@ class ConfigModel:
         self.defaultUserColor = "#000000"
         
         self.transformationOptions = [
-                    ["Operação", ["Translação", "Escala", "Rotação", "Cisalinhamento"]],
+                    ["Operação", ["Translação", "Escala", "Rotação", "Cisalinhamento", "Reflexão"]],
                     ["Eixo", ["X", "Y", "Ambos"]],
                     ["Fator da Transformação"],
                     ["Angulo de Rotação"],
