@@ -64,32 +64,33 @@ def drawGUI():
 
         # Clicked on Draw Pixel button
         elif event == keys.MENU_DRAW_PIXEL_KEY:
-            if values[keys.X1_COORDINATES_BUTTON_KEY] == '' or values[keys.Y1_COORDINATES_BUTTON_KEY] == '':
-                utils.createPopupOneButton(windowName="Error", 
-                                            msgTxt="Please give me X and Y coordinates! Alternatively, you can use the mouse on the Canvas", 
-                                            buttonTxt="Ok!")
-
-            else:
+            try:
                 selectedX = float(values[keys.X1_COORDINATES_BUTTON_KEY])
                 selectedY = float(values[keys.Y1_COORDINATES_BUTTON_KEY])
+            except ValueError:
+                utils.createPopupOneButton(windowName="Error", 
+                                            msgTxt="Por favor, me dê coordenadas X e Y válidas! Alternativamente, você pode simplesmente clicar no canvas", 
+                                            buttonTxt="Ok!")
+                continue
 
-                graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
 
-                print(f"Drawed pixel on {selectedX}, {selectedY}")
+            graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
 
-                # Se não for primeiro ponto, desenhar linha
-                if len(points["x"]) > 0:
-                    graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
-                                    point_to=(selectedX, selectedY),
-                                    color=userColor
-                                )
+            print(f"Drawed pixel on {selectedX}, {selectedY}")
 
-                usedColors.append(userColor)
+            # Se não for primeiro ponto, desenhar linha
+            if len(points["x"]) > 0:
+                graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
+                                point_to=(selectedX, selectedY),
+                                color=userColor
+                            )
 
-                points["x"].append(selectedX)
-                points["y"].append(selectedY)
+            usedColors.append(userColor)
 
-                window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
+            points["x"].append(selectedX)
+            points["y"].append(selectedY)
+
+            window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
         
 
         # Clicked on select color button
