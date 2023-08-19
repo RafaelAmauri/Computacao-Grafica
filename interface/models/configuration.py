@@ -26,7 +26,7 @@ class ConfigModel:
         }
   
         self.layoutLeft = [
-                [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(0,0), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
+                [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(-800,-800), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
         ]
 
         self.layoutMiddle1 = [
