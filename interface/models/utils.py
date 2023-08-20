@@ -11,7 +11,7 @@ def createPopupOneButton(windowName: str, msgTxt: str, buttonTxt: str):
                     element_justification='c').read(close=True)
 
 def clearCanvas(graph, config):
-    graph.DrawRectangle(top_left=(-800,-800),
+    graph.DrawRectangle(top_left=(0,0),
                                 bottom_right=config.canvasSize,
                                 fill_color=config.defaultBgColor
                 )

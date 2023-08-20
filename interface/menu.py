@@ -50,10 +50,22 @@ def drawGUI():
 
             # Se não for primeiro ponto, desenhar linha
             if len(points["x"]) > 0:
-                graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
+                if algoritmoLinha == "Padrão":
+                    graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
                                point_to=(clickedX, clickedY),
                                color=userColor
                             )
+
+                elif algoritmoLinha == "DDA":
+                    ddaPoints = dda.dda2d(point1=(points["x"][-1], points["y"][-1]),
+                                           point2=(clickedX, clickedY)
+                    )
+
+                    for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
+                        graph.DrawPoint((pX, pY),
+                        10,
+                        color=userColor)
+
 
             usedColors.append(userColor)
 
@@ -95,7 +107,7 @@ def drawGUI():
 
                     for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
                         graph.DrawPoint((pX, pY), 
-                        10,
+                        4,
                         color='black')
 
 
