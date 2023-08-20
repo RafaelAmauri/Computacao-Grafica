@@ -19,11 +19,9 @@ class ConfigModel:
                     ["Direção da Rotação", ["Horário", "Anti-Horário"]]
         ]
 
-        self.defaultUserTransformations = {
-                                    keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY: "Translação",
-                                    keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY: "both",
-                                    keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY: 2
-        }
+        self.algorithmOptions = [
+            [keys.CHOOSE_LINE_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_LINE_ALGORITHM_CHOICE_1, keys.CHOOSE_LINE_ALGORITHM_CHOICE_2]]
+        ]
   
         self.layoutLeft = [
                 [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(-800,-800), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
@@ -49,23 +47,66 @@ class ConfigModel:
                 [sg.Text(self.transformationOptions[1][0], pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(self.transformationOptions[2][0], pad=(self.textBoxSize,25))],
                 [sg.Text(self.transformationOptions[3][0], pad=(self.textBoxSize,1))],
-                [sg.Text(self.transformationOptions[4][0], pad=(self.textBoxSize,self.textBoxSize))]
+                [sg.Text(self.transformationOptions[4][0], pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(self.algorithmOptions[0][0],      pad=(self.textBoxSize,self.textBoxSize))]
         ]
 
         self.layoutRight2 = [
-            [sg.OptionMenu(values=(self.transformationOptions[0][1]), size=self.inputboxSize, default_value=self.transformationOptions[0][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY)],
-            [sg.OptionMenu(values=(self.transformationOptions[1][1]), size=self.inputboxSize, default_value=self.transformationOptions[1][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY)],
-            [sg.Slider(range=(-10,10), default_value=2.0, resolution=0.5, orientation="horizontal", key=keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY)],
-            [sg.Slider(range=(0,359), default_value=90.0, resolution=1, orientation="horizontal", key=keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_ANGLE_KEY)],
-            [sg.OptionMenu(values=(self.transformationOptions[4][1]), size=self.inputboxSize, default_value=self.transformationOptions[4][1][0], key=keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_DIRECTION_KEY)]
+            [sg.OptionMenu(
+                values=(self.transformationOptions[0][1]), 
+                size=self.inputboxSize, 
+                default_value=keys.CHOOSE_TRANSFORMATION_OPTION_DEFAULT_TRANSFORMATION, 
+                key=keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY
+                )],
+            
+            [sg.OptionMenu(
+                values=(self.transformationOptions[1][1]), 
+                size=self.inputboxSize, 
+                default_value=keys.CHOOSE_TRANSFORMATION_OPTION_DEFAULT_AXIS, 
+                key=keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY
+                )],
+            
+            [sg.Slider(
+                range=(-10,10), 
+                default_value=keys.CHOOSE_TRANSFORMATION_OPTION_DEFAULT_FACTOR, 
+                resolution=0.5,
+                orientation="horizontal", 
+                key=keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_FACTOR_KEY
+                )],
+            
+            [sg.Slider(
+                range=(0,359), 
+                default_value=keys.CHOOSE_TRANSFORMATION_OPTION_DEFAULT_ROTATION_ANGLE, 
+                resolution=1, 
+                orientation="horizontal", 
+                key=keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY
+                )],
+            
+            [sg.OptionMenu(
+                values=(self.transformationOptions[4][1]), 
+                size=self.inputboxSize, 
+                default_value=keys.CHOOSE_TRANSFORMATION_OPTION_DEFAULT_ROTATION_DIRECTION, 
+                key=keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY
+                )],
+            
+            [sg.OptionMenu(
+                values=self.algorithmOptions[0][1], 
+                size=self.inputboxSize, 
+                default_value=keys.CHOOSE_LINE_ALGORITHM_DEFAULT_OPTION, 
+                key=keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY
+                )]
         ]
 
         self.layoutBottom = [
             [sg.Button(keys.MENU_CLOSE_TEXT, key=keys.MENU_CLOSE_KEY),]
         ]
 
+        # 3 Columns
         self.layoutScreen = [
-            [sg.vtop(sg.Column(self.layoutLeft)), sg.VSeparator(), sg.vtop(sg.Column(self.layoutMiddle1)), sg.vtop(sg.Column(self.layoutMiddle2)), sg.VSeparator(), sg.vtop(sg.Column(self.layoutRight1)), sg.vtop(sg.Column(self.layoutRight2)), sg.vbottom(sg.Column(self.layoutBottom))]
+            [
+                sg.vtop(sg.Column(self.layoutLeft)), sg.VSeparator(), 
+                sg.vtop(sg.Column(self.layoutMiddle1)), sg.vtop(sg.Column(self.layoutMiddle2)), sg.VSeparator(), 
+                sg.vtop(sg.Column(self.layoutRight1)), sg.vtop(sg.Column(self.layoutRight2)), sg.vbottom(sg.Column(self.layoutBottom))]
         ]
     
 

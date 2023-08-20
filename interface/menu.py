@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys, utils
 from interface.screens import choose_color
 
-from graphics import translation, scale, rotation, shear, reflection
+from graphics import translation, scale, rotation, shear, reflection, dda
 
 
 def drawGUI():
@@ -30,7 +30,8 @@ def drawGUI():
 
     # Event Loop to process events and get the values of the inputs
     while True:
-        event, values = window.read()
+        event, values  = window.read()
+        algoritmoLinha = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
 
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
@@ -78,12 +79,25 @@ def drawGUI():
 
             print(f"Drawed pixel on {selectedX}, {selectedY}")
 
-            # Se não for primeiro ponto, desenhar linha
+            # Apenas não desenhamos linhas se tiver só um ponto.
+            # Se tiver mais de um ponto, desenhar linha
             if len(points["x"]) > 0:
-                graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
-                                point_to=(selectedX, selectedY),
-                                color=userColor
-                            )
+                if algoritmoLinha == "Padrão":
+                    graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
+                                    point_to=(selectedX, selectedY),
+                                    color=userColor
+                                )
+                
+                elif algoritmoLinha == "DDA":
+                    ddaPoints = dda.dda2d( point1=(points["x"][-1], points["y"][-1]),
+                                           point2=(selectedX, selectedY)
+                    )
+
+                    for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
+                        graph.DrawPoint((pX, pY), 
+                        10,
+                        color='black')
+
 
             usedColors.append(userColor)
 
@@ -120,13 +134,13 @@ def drawGUI():
         
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
-            axisUserChoice = values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_AXIS_KEY] in ["X", "Y"] else "both"
-            
-            try:
-                factorUserChoice = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_FACTOR_KEY])
-                rotationAngleUserChoice  = float(values[keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_ANGLE_KEY])
-                rotationDirectionUserChoice = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
 
+            axisUserChoice = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
+            rotationDirectionUserChoice  =  "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
+
+            try:
+                factorUserChoice             =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_FACTOR_KEY])
+                rotationAngleUserChoice      =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY])
             except ValueError:
                 utils.createPopupOneButton(windowName="Error", 
                                             msgTxt="Por favor, apenas números nos valores \"Fator\" e \"Ângulo\"!", 
@@ -135,31 +149,31 @@ def drawGUI():
 
             utils.clearCanvas(graph, config)
 
-            if values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Translação":
+            if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Translação":
                 points = translation.translation2d(figure=points,
                                                     axis=axisUserChoice,
                                                     x_padding=factorUserChoice,
                                                     y_padding=factorUserChoice
                 )
 
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Escala":
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Escala":
                 points = scale.scale2d(figure=points,
                                         axis=axisUserChoice,
                                         x_scale=factorUserChoice,
                                         y_scale=factorUserChoice
                                         )
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Rotação":
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Rotação":
                 points = rotation.rotation2d(figure=points,
                                             direction=rotationDirectionUserChoice,
                                             angle=rotationAngleUserChoice
                 )
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Cisalinhamento":
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Cisalinhamento":
                 points = shear.shear2d(figure=points,
                                         axis=axisUserChoice,
                                         factor=factorUserChoice
                 )
             
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_TRANSFORMATION_KEY] == "Reflexão":
+            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Reflexão":
                 points = reflection.reflection2d(points,
                                                 axis=axisUserChoice
                                                 )
@@ -169,9 +183,25 @@ def drawGUI():
                 graph.DrawPoint((tempX, tempY), 10, color=tempColor)
 
                 if idx != 0:
-                    graph.DrawLine(point_from=(points["x"][idx-1], points["y"][idx-1]),
-                                    point_to=(points["x"][idx], points["y"][idx]),
-                                    color=tempColor
-                                )
+                    if algoritmoLinha == "Padrão":
+                        print("Algoritmo Padrão!")
+                        graph.DrawLine(point_from=(points["x"][idx-1], points["y"][idx-1]),
+                                        point_to=(points["x"][idx], points["y"][idx]),
+                                        color=tempColor
+                                    )
+
+                    elif algoritmoLinha == "DDA":
+                        print("Algoritmo DDA!")
+                        
+                        ddaPoints = dda.dda2d( point1=(points["x"][idx-1], points["y"][idx-1]),
+                                                point2=(points["x"][idx], points["y"][idx])
+                        )
+
+                        print(ddaPoints)
+
+                        for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
+                            graph.DrawPoint((pX, pY), 
+                            10,
+                            color='black')
 
     window.close()
