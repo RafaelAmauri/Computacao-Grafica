@@ -44,7 +44,7 @@ def drawGUI():
             window[keys.X1_COORDINATES_BUTTON_KEY].Update(clickedX)
             window[keys.Y1_COORDINATES_BUTTON_KEY].Update(clickedY)
             
-            graph.DrawPoint(values[keys.MENU_GRAPH_KEY], 10, color=userColor)
+            graph.DrawPoint((clickedX, clickedY), 10, color=userColor)
             
             print(f"Drawed pixel on {clickedX}, {clickedY}")
 
@@ -61,9 +61,9 @@ def drawGUI():
                                            point2=(clickedX, clickedY)
                     )
 
-                    for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
-                        graph.DrawPoint((pX, pY),
-                        10,
+                    for ddaX, ddaY in zip(ddaPoints["x"], ddaPoints["y"]):
+                        graph.DrawPoint((ddaX, ddaY),
+                        1,
                         color=userColor)
 
 
@@ -107,7 +107,7 @@ def drawGUI():
 
                     for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
                         graph.DrawPoint((pX, pY), 
-                        4,
+                        1,
                         color='black')
 
 
@@ -203,17 +203,13 @@ def drawGUI():
                                     )
 
                     elif algoritmoLinha == "DDA":
-                        print("Algoritmo DDA!")
-                        
-                        ddaPoints = dda.dda2d( point1=(points["x"][idx-1], points["y"][idx-1]),
+                        ddaPoints = dda.dda2d(  point1=(points["x"][idx-1], points["y"][idx-1]),
                                                 point2=(points["x"][idx], points["y"][idx])
                         )
 
-                        print(ddaPoints)
-
                         for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
                             graph.DrawPoint((pX, pY), 
-                            10,
-                            color='black')
+                            1,
+                            color=tempColor)
 
     window.close()
