@@ -63,7 +63,7 @@ def drawGUI():
 
                     for ddaX, ddaY in zip(ddaPoints["x"], ddaPoints["y"]):
                         graph.DrawPoint((ddaX, ddaY),
-                        1,
+                        2,
                         color=userColor)
 
 
@@ -209,7 +209,7 @@ def drawGUI():
 
                         for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
                             graph.DrawPoint((pX, pY), 
-                            1,
+                            2,
                             color=tempColor)
 
     window.close()
