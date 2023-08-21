@@ -7,35 +7,23 @@ def dda2d(point1: tuple, point2: tuple):
     deltaX = int(p2X - p1X)
     deltaY = int(p2Y - p1Y)
 
-    pointsInLine = {
+    ddaPoints = {
         "x": [],
         "y": []
     }
 
-    # A função round do python estava arredondando 2.5 pra 2 ao invés de 3, então
-    # fiz meu próprio round
+    # Python's default round function is not working. It's rounding 2.5 to 2 instead of 3, so
+    # I decided to make my own
     roundDDA = lambda n: float(math.ceil(n)) if n%1 >= 0.5 else float(math.floor(n))
 
-    # TODO O sinal de deltaX e deltaY está zoando a conta
-    # X aumenta de 1 em 1, Y aumenta de acordo com <increment>
-    if deltaX > deltaY:
-        increment = deltaY / deltaX
+    nSteps = abs(deltaX) if abs(deltaX) > abs(deltaY) else abs(deltaY)
+    
+    incrementX = float(deltaX/nSteps)
+    incrementY = float(deltaY/nSteps)
+    
+    for step in range(nSteps+1):
+        ddaPoints["x"].append(round(p1X + incrementX*step))
+        ddaPoints["y"].append(round(p1Y + incrementY*step))
 
-        pointsInLine["x"] = [p1X + step for step in range(abs(deltaX)+1)] if deltaX > 0 else [p1X - step for step in range(abs(deltaX)+1)]
 
-        yant = increment + p1Y
-        pointsInLine["y"].append(p1Y)
-        extendY = [roundDDA(yant + increment*step) for step in range(abs(deltaY+1))] if deltaY > 0 else [roundDDA(yant - increment*step) for step in range(abs(deltaY)+1)]
-        pointsInLine["y"].extend(extendY)
-
-    # Y aumenta de 1 em 1, X aumenta de acordo com <increment>
-    else:
-        increment = deltaX / deltaY
-
-        pointsInLine["y"] = [p1Y + step for step in range(deltaY+1)]
-
-        xant = increment + p1X
-        pointsInLine["x"].append(p1X)
-        pointsInLine["x"].extend([roundDDA(xant + increment * step) for step in range(deltaX+1)])
-
-    return pointsInLine
+    return ddaPoints
