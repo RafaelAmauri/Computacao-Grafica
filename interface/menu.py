@@ -3,6 +3,8 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys, utils
 from interface.screens import choose_color
 
+import concurrent.futures
+
 from graphics import translation, scale, rotation, shear, reflection, dda
 
 
@@ -52,13 +54,13 @@ def drawGUI():
             if len(points["x"]) > 0:
                 if algoritmoLinha == "Padrão":
                     graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
-                               point_to=(clickedX, clickedY),
-                               color=userColor
+                            point_to=(clickedX, clickedY),
+                            color=userColor
                             )
 
                 elif algoritmoLinha == "DDA":
                     ddaPoints = dda.dda2d(point1=(points["x"][-1], points["y"][-1]),
-                                           point2=(clickedX, clickedY)
+                                        point2=(clickedX, clickedY)
                     )
 
                     for ddaX, ddaY in zip(ddaPoints["x"], ddaPoints["y"]):
@@ -102,7 +104,7 @@ def drawGUI():
                 
                 elif algoritmoLinha == "DDA":
                     ddaPoints = dda.dda2d( point1=(points["x"][-1], points["y"][-1]),
-                                           point2=(selectedX, selectedY)
+                                        point2=(selectedX, selectedY)
                     )
 
                     for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
@@ -126,6 +128,7 @@ def drawGUI():
         # Clicked on erase button
         elif event == keys.MENU_ERASE_KEY:
             userColor = config.defaultBgColor
+            window[keys.MENU_ERASER_SIDE_SLIDER_KEY].Update(visible=True)
 
             utils.createPopupOneButton(windowName="Apagar",
                                         msgTxt="Borracha selecionada!",
@@ -190,7 +193,6 @@ def drawGUI():
                                                 axis=axisUserChoice
                                                 )
             
-
             for idx, (tempX, tempY, tempColor) in enumerate(zip(points["x"], points["y"], usedColors)):
                 graph.DrawPoint((tempX, tempY), 10, color=tempColor)
 
