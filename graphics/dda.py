@@ -18,15 +18,8 @@ def dda2d(point1: tuple, point2: tuple):
 
     nSteps = abs(deltaX) if abs(deltaX) > abs(deltaY) else abs(deltaY)
     
-    if deltaX != 0:
-        incrementX = float(deltaX/nSteps)
-    else:
-        incrementX = 0
-
-    if deltaY != 0:
-        incrementY = float(deltaY/nSteps)
-    else:
-        incrementY = 0
+    incrementX = float(deltaX/nSteps) if deltaX != 0 else 0
+    incrementY = float(deltaY/nSteps) if deltaY != 0 else 0
     
     for step in range(nSteps+1):
         ddaPoints["x"].append(roundDDA(p1X + incrementX*step))
