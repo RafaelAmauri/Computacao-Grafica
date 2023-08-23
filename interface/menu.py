@@ -16,16 +16,20 @@ def drawGUI():
     # Create the Window
     window = sg.Window('My Graphics Library', screens).finalize()
     graph = window[keys.MENU_GRAPH_KEY]
+    
 
-
-    # Check config for default values
-    userColor   = config.defaultUserColor
+    # Stores points in a a memory-efficient manner providing fast access times as well as fast lookup times.
+    # Check the documentation over at pointer_storer.py
     points = point_storer.PointStorer()
+
+
 
     # We have to maintain color cohesion after the transforms, so we use this to store the order that the user
     # has drawn their lines
-    usedColors = []
+    userUsedColors = []
 
+    # Check config for default values
+    userColor   = config.defaultUserColor
 
     # Event Loop to process events and get the values of the inputs
     while True:
@@ -68,7 +72,7 @@ def drawGUI():
 
 
                 points.add((clickedX, clickedY))
-                usedColors.append(userColor)
+                userUsedColors.append(userColor)
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
 
@@ -94,7 +98,7 @@ def drawGUI():
 
                 # Apenas não desenhamos linhas se tiver só um ponto.
                 # Se tiver mais de um ponto, desenhar linha
-                if len(points["x"]) > 0:
+                if points.numPoints > 0:
                     if algoritmoLinha == "Padrão":
                         graph.DrawLine( point_from=(points.points["x"][-1], points.points["y"][-1]),
                                         point_to=(selectedX, selectedY),
@@ -106,13 +110,13 @@ def drawGUI():
                                                 point2=(selectedX, selectedY)
                         )
 
-                        for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
-                            graph.DrawPoint((pX, pY), 
-                            1,
+                        for pX, pY in zip(ddaPoints.points["x"], ddaPoints.points["y"]):
+                            graph.DrawPoint((pX, pY),
+                            2,
                             color=userColor)
 
                 points.add((selectedX, selectedY))
-                usedColors.append(userColor)
+                userUsedColors.append(userColor)
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
 
@@ -141,7 +145,7 @@ def drawGUI():
             window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=True)
 
             points.clear()
-            usedColors  = []
+            userUsedColors  = []
 
         
         # Clicked on apply transformation button
@@ -190,7 +194,7 @@ def drawGUI():
                                                 axis=axisUserChoice
                                                 )
             
-            for idx, (tempX, tempY, tempColor) in enumerate(zip(points.points["x"], points.points["y"], usedColors)):
+            for idx, (tempX, tempY, tempColor) in enumerate(zip(points.points["x"], points.points["y"], userUsedColors)):
                 graph.DrawPoint((tempX, tempY), 10, color=tempColor)
 
                 if idx != 0:

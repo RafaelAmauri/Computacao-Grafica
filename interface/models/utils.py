@@ -1,6 +1,4 @@
 import PySimpleGUI as sg
-from graphics import translation
-
 
 def createPopupOneButton(windowName: str, msgTxt: str, buttonTxt: str):
     sg.Window(windowName,
