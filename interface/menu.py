@@ -3,9 +3,7 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys, utils
 from interface.screens import choose_color
 
-import concurrent.futures
-
-from graphics import translation, scale, rotation, shear, reflection, dda
+from graphics import translation, scale, rotation, shear, reflection, dda, point_storer
 
 
 def drawGUI():
@@ -21,12 +19,11 @@ def drawGUI():
 
 
     # Check config for default values
-    userColor = config.defaultUserColor
+    userColor   = config.defaultUserColor
+    points = point_storer.PointStorer()
 
-    points = {
-                "x": [],
-                "y": []
-    }
+    # We have to maintain color cohesion after the transforms, so we use this to store the order that the user
+    # has drawn their lines
     usedColors = []
 
 
@@ -41,85 +38,86 @@ def drawGUI():
 
         # Clicked on graph
         elif event == keys.MENU_GRAPH_KEY:
-            clickedX, clickedY = values[keys.MENU_GRAPH_KEY]
+            clickedX, clickedY = (int(v) for v in values[keys.MENU_GRAPH_KEY])
 
-            window[keys.X1_COORDINATES_BUTTON_KEY].Update(clickedX)
-            window[keys.Y1_COORDINATES_BUTTON_KEY].Update(clickedY)
-            
-            graph.DrawPoint((clickedX, clickedY), 10, color=userColor)
-            
-            print(f"Drawed pixel on {clickedX}, {clickedY}")
-
-            # Se não for primeiro ponto, desenhar linha
-            if len(points["x"]) > 0:
-                if algoritmoLinha == "Padrão":
-                    graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
-                            point_to=(clickedX, clickedY),
-                            color=userColor
-                            )
-
-                elif algoritmoLinha == "DDA":
-                    ddaPoints = dda.dda2d(point1=(points["x"][-1], points["y"][-1]),
-                                        point2=(clickedX, clickedY)
-                    )
-
-                    for ddaX, ddaY in zip(ddaPoints["x"], ddaPoints["y"]):
-                        graph.DrawPoint((ddaX, ddaY),
-                        2,
-                        color=userColor)
-
-
-            usedColors.append(userColor)
-
-            points["x"].append(float(clickedX))
-            points["y"].append(float(clickedY))
-
-            window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
+            if (clickedX, clickedY) not in points:
+                window[keys.X1_COORDINATES_BUTTON_KEY].Update(clickedX)
+                window[keys.Y1_COORDINATES_BUTTON_KEY].Update(clickedY)
                 
+                graph.DrawPoint((clickedX, clickedY), 10, color=userColor)
+                
+                print(f"Drawed pixel on {clickedX}, {clickedY}")
+
+                # Se não for primeiro ponto, desenhar linha
+                if points.numPoints > 0:
+                    if algoritmoLinha == "Padrão":
+                        graph.DrawLine(point_from=(points.points["x"][-1], points.points["y"][-1]),
+                                point_to=(clickedX, clickedY),
+                                color=userColor
+                                )
+
+                    elif algoritmoLinha == "DDA":
+                        ddaPoints = dda.dda2d(point1=(points.points["x"][-1], points.points["y"][-1]),
+                                            point2=(clickedX, clickedY)
+                        )
+
+                        for ddaX, ddaY in zip(ddaPoints.points["x"], ddaPoints.points["y"]):
+                            graph.DrawPoint((ddaX, ddaY),
+                            2,
+                            color=userColor)
+
+
+                points.add((clickedX, clickedY))
+                usedColors.append(userColor)
+
+                window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
+
+            else:
+                print("JÁ INSERIDO")
 
         # Clicked on Draw Pixel button
         elif event == keys.MENU_DRAW_PIXEL_KEY:
             try:
-                selectedX = float(values[keys.X1_COORDINATES_BUTTON_KEY])
-                selectedY = float(values[keys.Y1_COORDINATES_BUTTON_KEY])
+                selectedX = int(values[keys.X1_COORDINATES_BUTTON_KEY])
+                selectedY = int(values[keys.Y1_COORDINATES_BUTTON_KEY])
             except ValueError:
                 utils.createPopupOneButton(windowName="Error", 
                                             msgTxt="Por favor, me dê coordenadas X e Y válidas! Alternativamente, você pode simplesmente clicar no canvas", 
                                             buttonTxt="Ok!")
                 continue
+            
 
+            if (selectedX, selectedY) not in points:
+                graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
 
-            graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
+                print(f"Drawed pixel on {selectedX}, {selectedY}")
 
-            print(f"Drawed pixel on {selectedX}, {selectedY}")
+                # Apenas não desenhamos linhas se tiver só um ponto.
+                # Se tiver mais de um ponto, desenhar linha
+                if len(points["x"]) > 0:
+                    if algoritmoLinha == "Padrão":
+                        graph.DrawLine( point_from=(points.points["x"][-1], points.points["y"][-1]),
+                                        point_to=(selectedX, selectedY),
+                                        color=userColor
+                                    )
+                    
+                    elif algoritmoLinha == "DDA":
+                        ddaPoints = dda.dda2d(  point1=(points.points["x"][-1], points.points["y"][-1]),
+                                                point2=(selectedX, selectedY)
+                        )
 
-            # Apenas não desenhamos linhas se tiver só um ponto.
-            # Se tiver mais de um ponto, desenhar linha
-            if len(points["x"]) > 0:
-                if algoritmoLinha == "Padrão":
-                    graph.DrawLine(point_from=(points["x"][-1], points["y"][-1]),
-                                    point_to=(selectedX, selectedY),
-                                    color=userColor
-                                )
-                
-                elif algoritmoLinha == "DDA":
-                    ddaPoints = dda.dda2d( point1=(points["x"][-1], points["y"][-1]),
-                                        point2=(selectedX, selectedY)
-                    )
+                        for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
+                            graph.DrawPoint((pX, pY), 
+                            1,
+                            color=userColor)
 
-                    for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
-                        graph.DrawPoint((pX, pY), 
-                        1,
-                        color='black')
+                points.add((selectedX, selectedY))
+                usedColors.append(userColor)
 
+                window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
 
-            usedColors.append(userColor)
-
-            points["x"].append(selectedX)
-            points["y"].append(selectedY)
-
-            window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
-        
+            else:
+                print("JÁ INSERIDO")
 
         # Clicked on select color button
         elif event == keys.MENU_SELECT_COLOR_KEY:
@@ -128,7 +126,7 @@ def drawGUI():
         # Clicked on erase button
         elif event == keys.MENU_ERASE_KEY:
             userColor = config.defaultBgColor
-            window[keys.MENU_ERASER_SIDE_SLIDER_KEY].Update(visible=True)
+            # window[keys.MENU_ERASER_SIDE_SLIDER_KEY].Update(visible=True)# COMING SOON!
 
             utils.createPopupOneButton(windowName="Apagar",
                                         msgTxt="Borracha selecionada!",
@@ -142,8 +140,7 @@ def drawGUI():
 
             window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=True)
 
-            points["x"] = []
-            points["y"] = []
+            points.clear()
             usedColors  = []
 
         
@@ -155,7 +152,7 @@ def drawGUI():
 
             try:
                 factorUserChoice             =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_FACTOR_KEY])
-                rotationAngleUserChoice      =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY])
+                rotationAngleUserChoice      =  int(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY])
             except ValueError:
                 utils.createPopupOneButton(windowName="Error", 
                                             msgTxt="Por favor, apenas números nos valores \"Fator\" e \"Ângulo\"!", 
@@ -193,24 +190,23 @@ def drawGUI():
                                                 axis=axisUserChoice
                                                 )
             
-            for idx, (tempX, tempY, tempColor) in enumerate(zip(points["x"], points["y"], usedColors)):
+            for idx, (tempX, tempY, tempColor) in enumerate(zip(points.points["x"], points.points["y"], usedColors)):
                 graph.DrawPoint((tempX, tempY), 10, color=tempColor)
 
                 if idx != 0:
                     if algoritmoLinha == "Padrão":
-                        print("Algoritmo Padrão!")
-                        graph.DrawLine(point_from=(points["x"][idx-1], points["y"][idx-1]),
-                                        point_to=(points["x"][idx], points["y"][idx]),
+                        graph.DrawLine(point_from=(points.points["x"][idx-1], points.points["y"][idx-1]),
+                                        point_to=(points.points["x"][idx], points.points["y"][idx]),
                                         color=tempColor
                                     )
 
                     elif algoritmoLinha == "DDA":
-                        ddaPoints = dda.dda2d(  point1=(points["x"][idx-1], points["y"][idx-1]),
-                                                point2=(points["x"][idx], points["y"][idx])
+                        ddaPoints = dda.dda2d(  point1=(points.points["x"][idx-1], points.points["y"][idx-1]),
+                                                point2=(points.points["x"][idx], points.points["y"][idx])
                         )
 
-                        for pX, pY in zip(ddaPoints["x"], ddaPoints["y"]):
-                            graph.DrawPoint((pX, pY), 
+                        for pX, pY in zip(ddaPoints.points["x"], ddaPoints.points["y"]):
+                            graph.DrawPoint((pX, pY),
                             2,
                             color=tempColor)
 
