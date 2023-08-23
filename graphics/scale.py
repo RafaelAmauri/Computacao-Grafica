@@ -7,11 +7,7 @@ def scale2d(figure: list, **kwargs):
     x_scale = kwargs.get("x_scale", None)
     y_scale = kwargs.get("y_scale", None)
 
-    new_figure = PointStorer()
-    for pX, pY in zip(figure.points["x"], figure.points["y"]):
-        new_figure.add((pX, pY))
-
-    new_figure = graphics_utils.move_to_origin(new_figure)
+    new_figure = graphics_utils.move_to_origin(figure.copy())
 
     if axis in ["x", "both"]:
         new_figure.points["x"] = [x*x_scale for x in new_figure.points["x"]]

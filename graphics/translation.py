@@ -6,10 +6,7 @@ def translation2d(figure: PointStorer(), **kwargs) -> PointStorer:
     x_padding = kwargs.get("x_padding", None)
     y_padding = kwargs.get("y_padding", None)
 
-    new_figure = PointStorer()
-
-    for pX, pY in zip(figure.points["x"], figure.points["y"]):
-        new_figure.add((pX, pY))
+    new_figure = figure.copy()
 
     if axis in ["x", "both"]:
         new_figure.points["x"] = [x+x_padding for x in figure.points["x"]]

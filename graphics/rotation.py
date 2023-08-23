@@ -8,8 +8,7 @@ def rotation2d(figure: PointStorer, **kwargs):
     angle     = kwargs.get("angle", None)
     angle     = angle * math.pi / 180
 
-    new_figure = PointStorer()
-    new_figure = graphics_utils.move_to_origin(figure)
+    new_figure = graphics_utils.move_to_origin(figure.copy())
 
     new_x = []
     new_y = []

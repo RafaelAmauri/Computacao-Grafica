@@ -5,7 +5,7 @@ def shear2d(figure: PointStorer, **kwargs) -> PointStorer:
     axis        = kwargs.get("axis", None)
     shearFactor = kwargs.get("factor", None)
 
-    new_figure = graphics_utils.move_to_origin(figure)
+    new_figure = graphics_utils.move_to_origin(figure.copy())
 
     if axis in ["x", "both"]:
         for idx, (x, y) in enumerate(zip(new_figure.points["x"], new_figure.points["y"])):

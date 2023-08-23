@@ -1,5 +1,5 @@
 import math
-from graphics import point_storer
+from graphics.point_storer import PointStorer
 
 # Python by nature will round all floats to the nearest even number.
 # So for example, round(2.5) is 2 instead of 3, so I decided to make my own
@@ -8,14 +8,14 @@ def roundDDA(n):
     return math.ceil(n) if n%1 >= 0.5 else math.floor(n)
 
 
-def dda2d(point1: tuple, point2: tuple) -> point_storer.PointStorer:
+def dda2d(point1: tuple, point2: tuple) -> PointStorer:
     p1X, p1Y = point1
     p2X, p2Y = point2
 
     deltaX = int(p2X - p1X)
     deltaY = int(p2Y - p1Y)
 
-    ddaPoints = point_storer.PointStorer()
+    ddaPoints = PointStorer()
 
     nSteps = abs(deltaX) if abs(deltaX) > abs(deltaY) else abs(deltaY)
     

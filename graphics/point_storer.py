@@ -5,7 +5,7 @@ class PointStorer:
             "x": [],
             "y": []
         }
-        
+
         # val here is used an optimization of the code. As it stands, there is nothing stopping the
         # user from adding the same point multiple times. And checking if the point is already on a list
         # is not time-efficient as it requires looping through all the items on the list.
@@ -19,6 +19,19 @@ class PointStorer:
 
     def __contains__(self, item):
         return item in self.val
+
+
+    def __copy__(self):
+        newPoints = PointStorer()
+
+        for px, py in zip(self.points["x"], self.points["y"]):
+            newPoints.points["x"].append(px)
+            newPoints.points["y"].append(py)
+        
+        newPoints.val = self.val
+        newPoints.numPoints = self.numPoints
+
+        return newPoints
 
 
     def add(self, p: tuple):
@@ -39,3 +52,7 @@ class PointStorer:
         self.val = set()
 
         self.numPoints = 0
+
+    
+    def copy(self):
+        return self.__copy__()
