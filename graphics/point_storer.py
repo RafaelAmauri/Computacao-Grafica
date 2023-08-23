@@ -28,6 +28,7 @@ class PointStorer:
         self.val = set()
 
         self.numPoints = 0
+        self.currentIndex = 0
 
 
     def add(self, p: tuple):
@@ -69,3 +70,18 @@ class PointStorer:
         newPoints.numPoints = self.numPoints
 
         return newPoints
+
+
+    def __iter__(self):
+        self.currentIndex = 0
+        return self
+
+
+    def __next__(self):
+        try:
+            p = zip((self.points["x"][self.currentIndex], self.points["y"][self.currentIndex]))
+        except IndexError:
+            raise StopIteration()
+        
+        self.currentIndex += 1
+        return p
