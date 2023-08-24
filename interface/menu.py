@@ -74,9 +74,7 @@ def drawGUI():
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
 
-            else:
-                print("JÁ INSERIDO")
-
+                
         # Clicked on Draw Pixel button
         elif event == keys.MENU_DRAW_PIXEL_KEY:
             try:
@@ -118,8 +116,6 @@ def drawGUI():
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
 
-            else:
-                print("JÁ INSERIDO")
 
         # Clicked on select color button
         elif event == keys.MENU_SELECT_COLOR_KEY:
