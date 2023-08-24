@@ -22,8 +22,6 @@ def drawGUI():
     # Check the documentation over at pointer_storer.py
     points = point_storer.PointStorer()
 
-
-
     # We have to maintain color cohesion after the transforms, so we use this to store the order that the user
     # has drawn their lines
     userUsedColors = []
@@ -65,9 +63,9 @@ def drawGUI():
                                             point2=(clickedX, clickedY)
                         )
 
-                        for ddaX, ddaY in zip(ddaPoints.points["x"], ddaPoints.points["y"]):
+                        for ddaX, ddaY in ddaPoints:
                             graph.DrawPoint((ddaX, ddaY),
-                            2,
+                            4,
                             color=userColor)
 
 
@@ -110,9 +108,9 @@ def drawGUI():
                                                 point2=(selectedX, selectedY)
                         )
 
-                        for pX, pY in zip(ddaPoints.points["x"], ddaPoints.points["y"]):
+                        for pX, pY in ddaPoints:
                             graph.DrawPoint((pX, pY),
-                            2,
+                            4,
                             color=userColor)
 
                 points.add((selectedX, selectedY))
@@ -193,8 +191,8 @@ def drawGUI():
                 points = reflection.reflection2d(points,
                                                 axis=axisUserChoice
                                                 )
-            
-            for idx, (tempX, tempY, tempColor) in enumerate(zip(points.points["x"], points.points["y"], userUsedColors)):
+
+            for idx, ((tempX, tempY), tempColor) in enumerate(zip(points, userUsedColors)):
                 graph.DrawPoint((tempX, tempY), 10, color=tempColor)
 
                 if idx != 0:
@@ -209,9 +207,9 @@ def drawGUI():
                                                 point2=(points.points["x"][idx], points.points["y"][idx])
                         )
 
-                        for pX, pY in zip(ddaPoints.points["x"], ddaPoints.points["y"]):
-                            graph.DrawPoint((pX, pY),
-                            2,
+                        for ddaX, ddaY in ddaPoints:
+                            graph.DrawPoint((ddaX, ddaY),
+                            4,
                             color=tempColor)
 
     window.close()

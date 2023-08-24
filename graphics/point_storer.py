@@ -79,7 +79,7 @@ class PointStorer:
 
     def __next__(self):
         try:
-            p = zip((self.points["x"][self.currentIndex], self.points["y"][self.currentIndex]))
+            p = (self.points["x"][self.currentIndex], self.points["y"][self.currentIndex])
         except IndexError:
             raise StopIteration()
         
