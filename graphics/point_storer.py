@@ -79,9 +79,9 @@ class PointStorer:
 
     def __next__(self):
         try:
-            p = (self.points["x"][self.currentIndex], self.points["y"][self.currentIndex])
+            v = (self.points["x"][self.currentIndex], self.points["y"][self.currentIndex])
         except IndexError:
             raise StopIteration()
         
         self.currentIndex += 1
-        return p
+        return v
