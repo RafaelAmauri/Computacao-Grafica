@@ -190,35 +190,37 @@ def drawGUI():
             
 
             # Rewrote previous code to optimize this for loop. Here we remember
-            # the values of the previous iteration (in previousX,Y) to avoid have to access 
+            # the values of the previous iteration (in previousX,Y) to avoid having to access 
             # the data in userPoints more than necessary. Before this we were 
             # accessing each point 2x, now it's only once. Hopefully this will translate to
             # one less branch instruction in the assembly code.
             previousX = userPoints.points["x"][0]
             previousY = userPoints.points["y"][0]
-            for idx, currentColor in zip(range(1, userPoints.numPoints), userUsedColors):
+            graph.DrawPoint((previousX, previousY), 10, color=userUsedColors[0])
+
+            # idx because we need to access userUsedColors too
+            for idx in range(1, userPoints.numPoints):
                 currentX = userPoints.points["x"][idx]
                 currentY = userPoints.points["y"][idx]
-
-                graph.DrawPoint((currentX, currentY), 10, color=currentColor)
+                graph.DrawPoint((currentX, currentY), 10, color=userUsedColors[idx])
 
                 if algoritmoLinha == "Padrão":
                     graph.DrawLine(point_from=(previousX, previousY),
                                     point_to=(currentX, currentY),
-                                    color=currentColor
+                                    color=userUsedColors[idx]
                                 )
+
                 elif algoritmoLinha == "DDA":
                     ddaPoints = dda.dda2d(  point1=(previousX, previousY),
                                             point2=(currentX, currentY)
                                             )
-
                     for ddaX, ddaY in ddaPoints:
                         graph.DrawPoint((ddaX, ddaY),
                                         4,
-                                        color=currentColor)
-
-                # Update for next loop
+                                        color=userUsedColors[idx])
+                                        
+                # Update for the next loop
                 previousX = currentX
                 previousY = currentY
-                            
+
     window.close()
