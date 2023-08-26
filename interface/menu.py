@@ -192,7 +192,9 @@ def drawGUI():
             # Rewrote previous code to optimize this for loop. Here we remember
             # the values of the previous iteration (in previousX,Y) to avoid having to access 
             # the data in userPoints more than necessary. Before this we were 
-            # accessing each point 2x, now it's only once. Hopefully this will translate to
+            # accessing each point 2x, now it's only once. 
+            # In addition to halfing the times we access memory, also
+            # removed one if statement which hopefully will translate to
             # one less branch instruction in the assembly code.
             previousX = userPoints.points["x"][0]
             previousY = userPoints.points["y"][0]
@@ -218,7 +220,7 @@ def drawGUI():
                         graph.DrawPoint((ddaX, ddaY),
                                         4,
                                         color=userUsedColors[idx])
-                                        
+
                 # Update for the next loop
                 previousX = currentX
                 previousY = currentY
