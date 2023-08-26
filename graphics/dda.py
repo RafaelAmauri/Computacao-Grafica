@@ -12,6 +12,9 @@ def dda2d(point1: tuple, point2: tuple) -> PointStorer:
     p1X, p1Y = point1
     p2X, p2Y = point2
 
+    if point1 == point2:
+        return PointStorer()
+
     deltaX = int(p2X - p1X)
     deltaY = int(p2Y - p1Y)
 
