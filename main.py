@@ -1,3 +1,3 @@
 from interface import menu
 
-menu.drawGUI()
+menu.drawGUI(True)

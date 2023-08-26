@@ -6,7 +6,7 @@ class ConfigModel:
         self.textBoxSize    = (12, 1)
         self.inputboxSize   = (12, 1)
         self.buttonSize     = (20, 1)
-        self.canvasSize     = (600,600)
+        self.canvasSize     = (1000,1000)
 
         self.defaultBgColor   = "#ffffff"
         self.defaultUserColor = "#000000"
@@ -24,7 +24,7 @@ class ConfigModel:
         ]
   
         self.layoutLeft = [
-                [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(-600,-600), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
+                [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(-1000,-1000), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
         ]
 
         self.layoutMiddle1 = [
