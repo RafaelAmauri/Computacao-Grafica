@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys
 from interface.screens import choose_color
 
-from graphics import point_storer, translation, scale, rotation, shear, reflection, dda, bresenham
+from graphics import point_storer, circle
 from utils import utils
 
 def drawGUI():
@@ -139,10 +139,25 @@ def drawGUI():
             userPoints.clear()
             userUsedColors  = []
 
-        
+
+        # Clicked on Draw Circle button
+        elif event == keys.MENU_DRAW_CIRCLE_KEY:
+            selectedX = int(values[keys.X1_COORDINATES_BUTTON_KEY])
+            selectedY = int(values[keys.Y1_COORDINATES_BUTTON_KEY])
+            circleRadius = int(values[keys.MENU_CIRCLE_RADIUS_KEY])
+            circleResolution = int(values[keys.MENU_CIRCLE_NPOINTS_KEY])
+
+            circlePoints = circle.circle2d( origin=(selectedX, selectedY), 
+                                            radius=circleRadius, 
+                                            resolution=circleResolution
+                                            )
+
+            for x, y in circlePoints:
+                graph.DrawPoint((x,y), 10, color=userColor)
+
+
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
-
             transformationUserChoice     = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY]
             axisUserChoice               = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
             rotationDirectionUserChoice  = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
