@@ -31,17 +31,18 @@ def drawGUI():
     functionMapLineAlgorithm  = config.functionMapLineAlgorithm
     userColor                 = config.defaultUserColor
 
+    window.move_to_center()
     # Event Loop to process events and get the values of the inputs
     while True:
         event, values  = window.read()
-        lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
-
+        
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
             break
 
         # Clicked on graph
         elif event == keys.MENU_GRAPH_KEY:
+            lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
             selectedX, selectedY = (int(v) for v in values[keys.MENU_GRAPH_KEY])
 
             if (selectedX, selectedY) not in userPoints:
@@ -78,6 +79,7 @@ def drawGUI():
                 
         # Clicked on Draw Pixel button
         elif event == keys.MENU_DRAW_PIXEL_KEY:
+            lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
             try:
                 selectedX = int(values[keys.X1_COORDINATES_BUTTON_KEY])
                 selectedY = int(values[keys.Y1_COORDINATES_BUTTON_KEY])
@@ -158,6 +160,7 @@ def drawGUI():
 
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
+
             transformationUserChoice     = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY]
             axisUserChoice               = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
             rotationDirectionUserChoice  = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"

@@ -7,7 +7,7 @@ class ConfigModel:
         self.textBoxSize    = (12, 1)
         self.inputboxSize   = (12, 1)
         self.buttonSize     = (20, 1)
-        self.canvasSize     = (1000,1000)
+        self.canvasSize     = (600,600)
 
         self.defaultBgColor   = "#ffffff"
         self.defaultUserColor = "#000000"
