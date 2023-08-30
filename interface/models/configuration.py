@@ -49,15 +49,25 @@ class ConfigModel:
                 [sg.Text(keys.X1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.X1_COORDINATES_BUTTON_KEY)],
                 [sg.HSeparator()],
                 [sg.Button(keys.MENU_DRAW_PIXEL_TEXT, key=keys.MENU_DRAW_PIXEL_KEY, size=self.buttonSize)],
-                [sg.Button(keys.MENU_ERASE_TEXT, key=keys.MENU_ERASE_KEY, size=self.buttonSize)]
+                [sg.Button(keys.MENU_ERASE_TEXT, key=keys.MENU_ERASE_KEY, size=self.buttonSize)],
+                [sg.Button(keys.MENU_SELECT_COLOR_TEXT, key=keys.MENU_SELECT_COLOR_KEY, size=self.buttonSize)],
+                [sg.HSeparator()],
+                [sg.Text(self.algorithmOptions[0][0], pad=(self.textBoxSize,self.textBoxSize))]
                 ]
 
         self.layoutMiddle2 = [
             [sg.Text(keys.Y1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.Y1_COORDINATES_BUTTON_KEY)],
             [sg.HSeparator()],
-            [sg.Button(keys.MENU_SELECT_COLOR_TEXT, key=keys.MENU_SELECT_COLOR_KEY, size=self.buttonSize)],
+            [sg.Button(keys.MENU_DRAW_CIRCLE_TEXT, key=keys.MENU_DRAW_CIRCLE_KEY, size=self.buttonSize)],
             [sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY, size=self.buttonSize)],
-            [sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, size=self.buttonSize, disabled=True)]
+            [sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, size=self.buttonSize, disabled=True)],
+            [sg.HSeparator()],
+            [sg.OptionMenu(
+                values=self.algorithmOptions[0][1], 
+                size=self.inputboxSize, 
+                default_value=keys.CHOOSE_LINE_ALGORITHM_DEFAULT_OPTION, 
+                key=keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY
+                )]
         ]
 
         self.layoutRight1 = [
@@ -65,8 +75,7 @@ class ConfigModel:
                 [sg.Text(self.transformationOptions[1][0], pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(self.transformationOptions[2][0], pad=(self.textBoxSize,25))],
                 [sg.Text(self.transformationOptions[3][0], pad=(self.textBoxSize,1))],
-                [sg.Text(self.transformationOptions[4][0], pad=(self.textBoxSize,self.textBoxSize))],
-                [sg.Text(self.algorithmOptions[0][0],      pad=(self.textBoxSize,self.textBoxSize))]
+                [sg.Text(self.transformationOptions[4][0], pad=(self.textBoxSize,self.textBoxSize))]
         ]
 
         self.layoutRight2 = [
@@ -105,13 +114,6 @@ class ConfigModel:
                 size=self.inputboxSize, 
                 default_value=keys.CHOOSE_TRANSFORMATION_OPTION_DEFAULT_ROTATION_DIRECTION, 
                 key=keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY
-                )],
-            
-            [sg.OptionMenu(
-                values=self.algorithmOptions[0][1], 
-                size=self.inputboxSize, 
-                default_value=keys.CHOOSE_LINE_ALGORITHM_DEFAULT_OPTION, 
-                key=keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY
                 )]
         ]
 
@@ -124,6 +126,7 @@ class ConfigModel:
             [
                 sg.vtop(sg.Column(self.layoutLeft)), sg.VSeparator(), 
                 sg.vtop(sg.Column(self.layoutMiddle1)), sg.vtop(sg.Column(self.layoutMiddle2)), sg.VSeparator(),
+                #sg.HSeparator(), sg.Column(self.layoutMiddleBottom1), sg.Column(self.layoutMiddleBottom1),
                 sg.vtop(sg.Column(self.layoutRight1)), sg.vtop(sg.Column(self.layoutRight2)), sg.vbottom(sg.Column(self.layoutBottom))]
         ]
     
