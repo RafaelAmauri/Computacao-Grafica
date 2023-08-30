@@ -1,10 +1,10 @@
 import PySimpleGUI as sg
 
-from interface.models import configuration, keys, utils
+from interface.models import configuration, keys
 from interface.screens import choose_color
 
-from graphics import translation, scale, rotation, shear, reflection, dda, point_storer
-import time
+from graphics import point_storer, translation, scale, rotation, shear, reflection, dda, bresenham
+from utils import utils
 
 def drawGUI():
     sg.theme('DarkAmber') # Add a touch of color
@@ -27,12 +27,14 @@ def drawGUI():
     userUsedColors = []
 
     # Check config for default values
-    userColor   = config.defaultUserColor
+    functionMapTransformation = config.functionMapTransformations
+    functionMapLineAlgorithm  = config.functionMapLineAlgorithm
+    userColor                 = config.defaultUserColor
 
     # Event Loop to process events and get the values of the inputs
     while True:
         event, values  = window.read()
-        algoritmoLinha = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
+        lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
 
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
@@ -40,36 +42,35 @@ def drawGUI():
 
         # Clicked on graph
         elif event == keys.MENU_GRAPH_KEY:
-            clickedX, clickedY = (int(v) for v in values[keys.MENU_GRAPH_KEY])
+            selectedX, selectedY = (int(v) for v in values[keys.MENU_GRAPH_KEY])
 
-            if (clickedX, clickedY) not in userPoints:
-                window[keys.X1_COORDINATES_BUTTON_KEY].Update(clickedX)
-                window[keys.Y1_COORDINATES_BUTTON_KEY].Update(clickedY)
+            if (selectedX, selectedY) not in userPoints:
+                window[keys.X1_COORDINATES_BUTTON_KEY].Update(selectedX)
+                window[keys.Y1_COORDINATES_BUTTON_KEY].Update(selectedY)
                 
-                graph.DrawPoint((clickedX, clickedY), 10, color=userColor)
+                graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
                 
-                print(f"Drawed pixel on {clickedX}, {clickedY}")
+                print(f"Drawed pixel on {selectedX}, {selectedY}")
 
                 # Se não for primeiro ponto, desenhar linha
                 if userPoints.numPoints > 0:
-                    if algoritmoLinha == "Padrão":
+                    if lineAlgorithmUserChoice == "Padrão":
                         graph.DrawLine(point_from=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                point_to=(clickedX, clickedY),
+                                point_to=(selectedX, selectedY),
                                 color=userColor
                                 )
 
-                    elif algoritmoLinha == "DDA":
-                        ddaPoints = dda.dda2d(point1=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                            point2=(clickedX, clickedY)
-                        )
 
-                        for ddaX, ddaY in ddaPoints:
-                            graph.DrawPoint((ddaX, ddaY),
-                            4,
-                            color=userColor)
+                    else:
+                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm(  graph=graph,
+                                            point1=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
+                                            point2=(selectedX, selectedY),
+                                            color=userColor
+                                            )
 
 
-                userPoints.add((clickedX, clickedY))
+                userPoints.add((selectedX, selectedY))
                 userUsedColors.append(userColor)
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
@@ -92,24 +93,21 @@ def drawGUI():
 
                 print(f"Drawed pixel on {selectedX}, {selectedY}")
 
-                # Apenas não desenhamos linhas se tiver só um ponto.
-                # Se tiver mais de um ponto, desenhar linha
+                # Algorithms have built-in functions that skip the operations if point1 and point2 are the same.
                 if userPoints.numPoints > 0:
-                    if algoritmoLinha == "Padrão":
+                    if lineAlgorithmUserChoice == "Padrão":
                         graph.DrawLine( point_from=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
                                         point_to=(selectedX, selectedY),
                                         color=userColor
-                                    )
-                    
-                    elif algoritmoLinha == "DDA":
-                        ddaPoints = dda.dda2d(  point1=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                                point2=(selectedX, selectedY)
-                        )
+                                        )
+                    else:
+                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm(  graph=graph,
+                                                point1=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
+                                                point2=(selectedX, selectedY),
+                                                color=userColor
+                                                )
 
-                        for pX, pY in ddaPoints:
-                            graph.DrawPoint((pX, pY),
-                            4,
-                            color=userColor)
 
                 userPoints.add((selectedX, selectedY))
                 userUsedColors.append(userColor)
@@ -145,9 +143,9 @@ def drawGUI():
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
 
-            axisUserChoice = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
-            rotationDirectionUserChoice  =  "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
-
+            transformationUserChoice     = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY]
+            axisUserChoice               = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
+            rotationDirectionUserChoice  = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
             try:
                 factorUserChoice             =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_FACTOR_KEY])
                 rotationAngleUserChoice      =  int(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY])
@@ -159,35 +157,19 @@ def drawGUI():
 
             utils.clearCanvas(graph, config)
 
-            if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Translação":
-                userPoints = translation.translation2d(figure=userPoints,
-                                                    axis=axisUserChoice,
-                                                    x_padding=factorUserChoice,
-                                                    y_padding=factorUserChoice
-                )
+            # Maps the transformation the user chose on the GUI to a function. The binds can
+            # be checked over at configuration.py.
+            functionTransformationUserChoice = functionMapTransformation[transformationUserChoice]
 
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Escala":
-                userPoints = scale.scale2d(figure=userPoints,
-                                        axis=axisUserChoice,
-                                        x_scale=factorUserChoice,
-                                        y_scale=factorUserChoice
-                                        )
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Rotação":
-                userPoints = rotation.rotation2d(figure=userPoints,
-                                            direction=rotationDirectionUserChoice,
-                                            angle=rotationAngleUserChoice
-                )
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Cisalinhamento":
-                userPoints = shear.shear2d(figure=userPoints,
-                                        axis=axisUserChoice,
-                                        factor=factorUserChoice
-                )
+            # Calculates the new points after performing the transformation
+            userPoints = functionTransformationUserChoice(  figure=userPoints,
+                                                            axis=axisUserChoice,
+                                                            factor=factorUserChoice,
+                                                            direction=rotationDirectionUserChoice,
+                                                            angle=rotationAngleUserChoice
+                                                            )
             
-            elif values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY] == "Reflexão":
-                userPoints = reflection.reflection2d(userPoints,
-                                                axis=axisUserChoice
-                                                )
-            
+
 
             # Rewrote previous code to optimize this for loop. Here we remember
             # the values of the previous iteration (in previousX,Y) to avoid having to access 
@@ -206,20 +188,19 @@ def drawGUI():
                 currentY = userPoints.points["y"][idx]
                 graph.DrawPoint((currentX, currentY), 10, color=userUsedColors[idx])
 
-                if algoritmoLinha == "Padrão":
+                if lineAlgorithmUserChoice == "Padrão":
                     graph.DrawLine(point_from=(previousX, previousY),
                                     point_to=(currentX, currentY),
                                     color=userUsedColors[idx]
                                 )
 
-                elif algoritmoLinha == "DDA":
-                    ddaPoints = dda.dda2d(  point1=(previousX, previousY),
-                                            point2=(currentX, currentY)
+                else:
+                    functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                    functionLineAlgorithm(  graph=graph,
+                                            point1=(previousX, previousY),
+                                            point2=(currentX, currentY),
+                                            color=userUsedColors[idx]
                                             )
-                    for ddaX, ddaY in ddaPoints:
-                        graph.DrawPoint((ddaX, ddaY),
-                                        4,
-                                        color=userUsedColors[idx])
 
                 # Update for the next loop
                 previousX = currentX

@@ -8,12 +8,23 @@ def roundDDA(n):
     return math.ceil(n) if n%1 >= 0.5 else math.floor(n)
 
 
+# Abstraction to make it easier to call the function
+def drawLineDDA(graph, point1: tuple, point2: tuple, color: str):
+    if point1 == point2:
+        return
+        
+    for x, y in dda2d(point1=point1, point2=point2):
+
+        graph.DrawPoint((x, y),
+                        4,
+                        color=color
+                        )
+
+
+# Retuns the points between point1 and point2
 def dda2d(point1: tuple, point2: tuple) -> PointStorer:
     p1X, p1Y = point1
     p2X, p2Y = point2
-
-    if point1 == point2:
-        return PointStorer()
 
     deltaX = int(p2X - p1X)
     deltaY = int(p2Y - p1Y)

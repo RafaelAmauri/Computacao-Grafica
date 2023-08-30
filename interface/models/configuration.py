@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 from interface.models import keys
+from graphics import point_storer, translation, scale, rotation, shear, reflection, dda, bresenham
 
 class ConfigModel:
     def __init__(self) -> None:
@@ -11,6 +12,23 @@ class ConfigModel:
         self.defaultBgColor   = "#ffffff"
         self.defaultUserColor = "#000000"
         
+        # Made to simplify menu.py, mostly.
+        # Could also give a small performance boost because we are removing a lot of
+        # if statements from the code. In case these were branch conditions in assembly, removing
+        # them could give us a nice performance boost
+        self.functionMapTransformations = {
+                            "Translação": translation.translation2d,
+                            "Escala": scale.scale2d,
+                            "Rotação": rotation.rotation2d,
+                            "Cisalinhamento": shear.shear2d,
+                            "Reflexão": reflection.reflection2d
+        }
+
+        self.functionMapLineAlgorithm = {
+                            "DDA": dda.drawLineDDA,
+                            "Bresenham": bresenham.drawLineBresenham
+        }
+
         self.transformationOptions = [
                     ["Operação", ["Translação", "Escala", "Rotação", "Cisalinhamento", "Reflexão"]],
                     ["Eixo", ["X", "Y", "Ambos"]],
@@ -20,7 +38,7 @@ class ConfigModel:
         ]
 
         self.algorithmOptions = [
-            [keys.CHOOSE_LINE_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_LINE_ALGORITHM_CHOICE_1, keys.CHOOSE_LINE_ALGORITHM_CHOICE_2]]
+            [keys.CHOOSE_LINE_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_LINE_ALGORITHM_CHOICE_1, keys.CHOOSE_LINE_ALGORITHM_CHOICE_2, keys.CHOOSE_LINE_ALGORITHM_CHOICE_3]]
         ]
   
         self.layoutLeft = [

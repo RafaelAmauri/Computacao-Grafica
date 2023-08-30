@@ -1,6 +1,7 @@
 import math
-from graphics import graphics_utils, translation
+from graphics import translation
 from graphics.point_storer import PointStorer
+from utils import graphics_utils
 
 
 def rotation2d(figure: PointStorer, **kwargs):
@@ -25,7 +26,7 @@ def rotation2d(figure: PointStorer, **kwargs):
     new_figure.points["x"] = new_x
     new_figure.points["y"] = new_y
 
-    new_figure  = translation.translation2d(new_figure, axis="x", x_padding=figure.points["x"][0])
-    new_figure  = translation.translation2d(new_figure, axis="y", y_padding=figure.points["y"][0])
+    new_figure  = translation.translation2d(new_figure, axis="x", factor=figure.points["x"][0])
+    new_figure  = translation.translation2d(new_figure, axis="y", factor=figure.points["y"][0])
 
     return new_figure

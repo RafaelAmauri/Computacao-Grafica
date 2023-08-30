@@ -7,7 +7,7 @@ from graphics.point_storer import PointStorer
 def move_to_origin(figure:PointStorer) -> PointStorer:
     new_figure = figure.copy()
 
-    new_figure = translation.translation2d(new_figure, axis="x", x_padding=new_figure.points["x"][0] * -1)
-    new_figure = translation.translation2d(new_figure, axis="y", y_padding=new_figure.points["y"][0] * -1)
+    new_figure = translation.translation2d(new_figure, axis="x", factor=new_figure.points["x"][0] * -1)
+    new_figure = translation.translation2d(new_figure, axis="y", factor=new_figure.points["y"][0] * -1)
     
     return new_figure
