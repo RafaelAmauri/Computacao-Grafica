@@ -160,7 +160,7 @@ def drawGUI():
 
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
-
+            lineAlgorithmUserChoice      = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
             transformationUserChoice     = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY]
             axisUserChoice               = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
             rotationDirectionUserChoice  = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
