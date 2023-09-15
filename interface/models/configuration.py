@@ -5,7 +5,7 @@ from graphics import translation, scale, rotation, shear, reflection, dda, brese
 class ConfigModel:
     def __init__(self) -> None:
         self.textBoxSize    = (12, 1)
-        self.inputboxSize   = (12, 1)
+        self.inputboxSize   = (15, 1)
         self.buttonSize     = (20, 1)
         self.canvasSize     = (600,600)
 
@@ -40,6 +40,10 @@ class ConfigModel:
         self.lineAlgorithmOptions = [
             [keys.CHOOSE_LINE_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_LINE_ALGORITHM_CHOICE_1, keys.CHOOSE_LINE_ALGORITHM_CHOICE_2, keys.CHOOSE_LINE_ALGORITHM_CHOICE_3]]
         ]
+
+        self.clippingAlgorithmOptions = [
+            [keys.CHOOSE_CLIPPING_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_CLIPPING_ALGORITHM_CHOICE_1, keys.CHOOSE_CLIPPING_ALGORITHM_CHOICE_2]]
+        ]
   
         self.layoutLeft = [
                 [sg.Graph(canvas_size=self.canvasSize, graph_bottom_left=(-600,-600), graph_top_right=self.canvasSize, background_color=self.defaultBgColor, key=keys.MENU_GRAPH_KEY, enable_events=True)]
@@ -51,41 +55,59 @@ class ConfigModel:
                 [sg.Button(keys.MENU_DRAW_PIXEL_TEXT, key=keys.MENU_DRAW_PIXEL_KEY, size=self.buttonSize)],
                 [sg.Button(keys.MENU_ERASE_TEXT, key=keys.MENU_ERASE_KEY, size=self.buttonSize)],
                 [sg.Button(keys.MENU_SELECT_COLOR_TEXT, key=keys.MENU_SELECT_COLOR_KEY, size=self.buttonSize)],
+                [sg.Button(keys.MENU_APPLY_CLIPPING_TEXT, key=keys.MENU_APPLY_CLIPPING_KEY, size=self.buttonSize)],
                 [sg.HSeparator()],
                 [sg.Text(self.lineAlgorithmOptions[0][0], pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(keys.MENU_CIRCLE_RADIUS_TEXT, pad=(self.textBoxSize,25))],
-                [sg.Text(keys.MENU_CIRCLE_NPOINTS_TEXT, pad=(self.textBoxSize,1))]
+                [sg.Text(keys.MENU_CIRCLE_NPOINTS_TEXT, pad=(self.textBoxSize,1))],
+                [sg.Text(keys.MIN_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_X_VALUE_CLIPPING_KEY)],
+                [sg.Text(keys.MIN_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_Y_VALUE_CLIPPING_KEY)],
+                [sg.Text(keys.CHOOSE_CLIPPING_ALGORITHM_DROPDOWN_TEXT, pad=(self.textBoxSize,self.textBoxSize))]
                 ]
 
         self.layoutMiddle2 = [
-            [sg.Text(keys.Y1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.Y1_COORDINATES_BUTTON_KEY)],
+            [sg.Push(), sg.Text(keys.Y1_COORDINATES_BUTTON_TEXT), sg.InputText(size=self.inputboxSize, key=keys.Y1_COORDINATES_BUTTON_KEY)],
             [sg.HSeparator()],
-            [sg.Button(keys.MENU_DRAW_CIRCLE_TEXT, key=keys.MENU_DRAW_CIRCLE_KEY, size=self.buttonSize)],
-            [sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY, size=self.buttonSize)],
-            [sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, size=self.buttonSize, disabled=True)],
+            [sg.Push(), sg.Button(keys.MENU_DRAW_CIRCLE_TEXT, key=keys.MENU_DRAW_CIRCLE_KEY, size=self.buttonSize)],
+            [sg.Push(), sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY, size=self.buttonSize)],
+            [sg.Push(), sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, pad=((0,5),(3,39)), size=self.buttonSize, disabled=True)],
             [sg.HSeparator()],
-            [sg.OptionMenu(
-                values=self.lineAlgorithmOptions[0][1], 
-                size=self.inputboxSize, 
-                default_value=keys.CHOOSE_LINE_ALGORITHM_DEFAULT_OPTION, 
-                key=keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY
+            [   sg.Push(),
+                sg.OptionMenu(
+                    values=self.lineAlgorithmOptions[0][1], 
+                    size=self.inputboxSize, 
+                    default_value=keys.CHOOSE_LINE_ALGORITHM_DEFAULT_OPTION, 
+                    key=keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY
                 )
             ],
-            [sg.Slider(
-                        range=(0,500),
+            [   sg.Push(), 
+                sg.Slider(
+                        range=(5,500),
                         default_value=100,
                         resolution=5,
                         orientation="horizontal",
                         key=keys.MENU_CIRCLE_RADIUS_KEY
-                    )
+                )
             ],
-            [sg.Slider(
-                        range=(0,1000),
+            [   sg.Push(),
+                sg.Slider(
+                        range=(5,1000),
                         default_value=100,
                         resolution=5,
                         orientation="horizontal",
                         key=keys.MENU_CIRCLE_NPOINTS_KEY
-            )]
+                )
+            ],
+            [sg.Text(keys.MAX_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MAX_X_VALUE_CLIPPING_KEY)],
+            [sg.Text(keys.MAX_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MAX_Y_VALUE_CLIPPING_KEY)],
+            [   sg.Push(),
+                sg.OptionMenu(
+                    values=self.clippingAlgorithmOptions[0][1], 
+                    size=self.inputboxSize, 
+                    default_value=keys.CHOOSE_CLIPPING_ALGORITHM_DEFAULT_OPTION, 
+                    key=keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY
+                )
+            ],
         ]
 
         self.layoutRight1 = [

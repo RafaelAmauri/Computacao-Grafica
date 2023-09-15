@@ -39,7 +39,7 @@ def drawGUI():
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
             break
-
+        
         # Clicked on graph
         elif event == keys.MENU_GRAPH_KEY:
             lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
@@ -75,6 +75,8 @@ def drawGUI():
                 userUsedColors.append(userColor)
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
+
+
 
                 
         # Clicked on Draw Pixel button
@@ -115,11 +117,13 @@ def drawGUI():
                 userUsedColors.append(userColor)
 
                 window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
+            
 
 
         # Clicked on select color button
         elif event == keys.MENU_SELECT_COLOR_KEY:
             userColor = choose_color.chooseColor(previousColor=userColor)
+            
 
         # Clicked on erase button
         elif event == keys.MENU_ERASE_KEY:
@@ -130,6 +134,7 @@ def drawGUI():
                                         msgTxt="Borracha selecionada!",
                                         buttonTxt="Ok!"
             )
+            
 
 
         # Clicked on erase all button
@@ -140,6 +145,7 @@ def drawGUI():
 
             userPoints.clear()
             userUsedColors  = []
+            
 
 
         # Clicked on Draw Circle button
@@ -157,6 +163,10 @@ def drawGUI():
             for x, y in circlePoints:
                 graph.DrawPoint((x,y), 10, color=userColor)
 
+
+        elif event == keys.MENU_APPLY_CLIPPING_KEY:
+            print(event)
+            
 
         # Clicked on apply transformation button
         elif event == keys.MENU_APPLY_TRANSFORMATION_KEY:
@@ -223,5 +233,6 @@ def drawGUI():
                 # Update for the next loop
                 previousX = currentX
                 previousY = currentY
+
 
     window.close()
