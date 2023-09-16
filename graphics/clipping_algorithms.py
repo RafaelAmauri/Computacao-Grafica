@@ -47,7 +47,7 @@ def cohenSutherland(startPoint: Tuple[int, int],
                     xLimits: Tuple[int, int], 
                     yLimits: Tuple[int, int]
                     ) -> Tuple[bool, Tuple[Tuple[int, int], Tuple[int, int]]]:
-    print("COHEN")
+
     # Define variables we'll be working with
     x1, y1 = startPoint
     x2, y2 = endPoint
@@ -167,7 +167,7 @@ def liangBarsky(startPoint: Tuple[int, int],
                 yLimits: Tuple[int, int]
                 ) -> Tuple[bool, Tuple[Tuple[int, int], Tuple[int, int]]]:
 
-    print("LIANG BARSKY")
+    # Define variables we'll be working with
     x1, y1 = startPoint
     x2, y2 = endPoint
     
