@@ -68,7 +68,7 @@ def cohenSutherland(point1: tuple, point2: tuple, xmin: int, xmax: int, ymin: in
             else:
                 x2 = x
                 y2 = y
-                outcode1 = calculateCode(x2, y2, xmin, xmax, ymin, ymax)
+                outcode2 = calculateCode(x2, y2, xmin, xmax, ymin, ymax)
 
 
     point1 = (x1, y1)

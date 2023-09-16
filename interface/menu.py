@@ -163,9 +163,33 @@ def drawGUI():
             for x, y in circlePoints:
                 graph.DrawPoint((x,y), 10, color=userColor)
 
-
+        #TODO Fix this!
+        # Clicked on apply clipping button
         elif event == keys.MENU_APPLY_CLIPPING_KEY:
-            print(event)
+            clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
+
+            import graphics.cohen_sutherland
+            utils.clearCanvas(graph, config)
+            previousX = userPoints.points["x"][0]
+            previousY = userPoints.points["y"][0]
+            
+            # idx because we need to access userUsedColors too
+            for idx in range(1, userPoints.numPoints):
+                currentX = userPoints.points["x"][idx]
+                currentY = userPoints.points["y"][idx]
+
+
+                point1, point2 = graphics.cohen_sutherland.cohenSutherland((previousX, previousY), (currentX, currentY), 100, 300, 100, 300)
+
+                graph.DrawLine(point_from=point1,
+                                point_to=point2,
+                                color='red'
+                            )
+                
+                # Update for the next loop
+                previousX = currentX
+                previousY = currentY
+
             
 
         # Clicked on apply transformation button
