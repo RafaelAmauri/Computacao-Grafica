@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys
 from interface.screens import choose_color
 
-from graphics import point_storer, circle
+from graphics import point_storer, circle, clipping_algorithms
 from utils import utils
 
 def drawGUI():
@@ -163,28 +163,47 @@ def drawGUI():
             for x, y in circlePoints:
                 graph.DrawPoint((x,y), 10, color=userColor)
 
-        #TODO Fix this!
+
         # Clicked on apply clipping button
         elif event == keys.MENU_APPLY_CLIPPING_KEY:
-            clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
+            try:
+                xmin = int(values[keys.MIN_X_VALUE_CLIPPING_KEY])
+                xmax = int(values[keys.MAX_X_VALUE_CLIPPING_KEY])
+                ymin = int(values[keys.MIN_Y_VALUE_CLIPPING_KEY])
+                ymax = int(values[keys.MAX_Y_VALUE_CLIPPING_KEY])
+            except ValueError:
+                utils.createPopupOneButton(windowName="Error", 
+                                            msgTxt="Por favor, me dê coordenadas válidas para o recorte!", 
+                                            buttonTxt="Ok!")
+                continue
 
-            import graphics.cohen_sutherland
+            clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
             utils.clearCanvas(graph, config)
+            
+            xLimits = (xmin, xmax)
+            yLimits = (ymin, ymax)
+
             previousX = userPoints.points["x"][0]
             previousY = userPoints.points["y"][0]
-            
+
+            graph.DrawRectangle((xmin, ymin), (xmax, ymax), line_color="red")
+
             # idx because we need to access userUsedColors too
             for idx in range(1, userPoints.numPoints):
                 currentX = userPoints.points["x"][idx]
                 currentY = userPoints.points["y"][idx]
 
 
-                point1, point2 = graphics.cohen_sutherland.cohenSutherland((previousX, previousY), (currentX, currentY), 100, 300, 100, 300)
+                isAccepted, ((previousX, previousY), (currentX, currentY)) = clipping_algorithms.cohenSutherland(   (previousX, previousY), 
+                                                                                                                    (currentX, currentY), 
+                                                                                                                    xLimits, 
+                                                                                                                    yLimits)
 
-                graph.DrawLine(point_from=point1,
-                                point_to=point2,
-                                color='red'
-                            )
+                if isAccepted:
+                    graph.DrawLine( point_from=(previousX, previousY),
+                                    point_to=(currentX, currentY),
+                                    color=userUsedColors[idx]
+                                )
                 
                 # Update for the next loop
                 previousX = currentX

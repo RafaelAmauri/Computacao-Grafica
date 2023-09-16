@@ -1,6 +1,8 @@
 import PySimpleGUI as sg
 from interface.models import keys
-from graphics import translation, scale, rotation, shear, reflection, dda, bresenham
+from graphics import translation, scale, rotation, shear, reflection
+from graphics.line_algorithms import drawLineDDA, drawLineBresenham
+
 
 class ConfigModel:
     def __init__(self) -> None:
@@ -25,8 +27,8 @@ class ConfigModel:
         }
 
         self.functionMapLineAlgorithm = {
-                            "DDA": dda.drawLineDDA,
-                            "Bresenham": bresenham.drawLineBresenham
+                            "DDA": drawLineDDA,
+                            "Bresenham": drawLineBresenham
         }
 
         self.transformationOptions = [
