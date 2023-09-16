@@ -181,17 +181,17 @@ def drawGUI():
             
             xLimits = (xmin, xmax)
             yLimits = (ymin, ymax)
-            previousX = userPoints.points["x"][0]
-            previousY = userPoints.points["y"][0]
 
             clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
             functionClippingUserChoice  = functionMapClippingAlgorithm[clippingAlgorithmUserChoice]
-
             # Clear canvas so we can only show the lines inside the clipping bounds
             utils.clearCanvas(graph, config)
             # Draw red rectangle to draw where the bounds are
             graph.DrawRectangle((xmin, ymin), (xmax, ymax), line_color="red")
 
+
+            previousX = userPoints.points["x"][0]
+            previousY = userPoints.points["y"][0]
             # idx because we need to access userUsedColors too
             for idx in range(1, userPoints.numPoints):
                 currentX = userPoints.points["x"][idx]

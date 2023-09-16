@@ -65,9 +65,6 @@ def cohenSutherland(startPoint: Tuple[int, int],
     outcode1 = calculateCodeCohenSutherland(x1, y1, xLimits, yLimits)
     outcode2 = calculateCodeCohenSutherland(x2, y2, xLimits, yLimits)
 
-    print(f"Outcode1 = {outcode1}")
-    print(f"Outcode2 = {outcode2}")
-
     while True:
         # The line is fully inside bounds
         if (outcode1 == 0) and (outcode2 == 0):
@@ -206,4 +203,4 @@ def liangBarsky(startPoint: Tuple[int, int],
 
         return True, (clippedStartPoint, clippedEndPoint)
     
-    return False, (clippedStartPoint, clippedEndPoint)
+    return False, (startPoint, endPoint)
