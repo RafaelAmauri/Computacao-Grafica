@@ -27,9 +27,10 @@ def drawGUI():
     userUsedColors = []
 
     # Check config for default values
-    functionMapTransformation = config.functionMapTransformations
-    functionMapLineAlgorithm  = config.functionMapLineAlgorithm
-    userColor                 = config.defaultUserColor
+    functionMapTransformation    = config.functionMapTransformations
+    functionMapLineAlgorithm     = config.functionMapLineAlgorithm
+    functionMapClippingAlgorithm = config.functionMapClippingAlgorithm
+    userColor                    = config.defaultUserColor
 
     window.move_to_center()
     # Event Loop to process events and get the values of the inputs
@@ -65,9 +66,9 @@ def drawGUI():
                     else:
                         functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
                         functionLineAlgorithm(  graph=graph,
-                                            point1=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                            point2=(selectedX, selectedY),
-                                            color=userColor
+                                                startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
+                                                endPoint=(selectedX, selectedY),
+                                                color=userColor
                                             )
 
 
@@ -107,8 +108,8 @@ def drawGUI():
                     else:
                         functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
                         functionLineAlgorithm(  graph=graph,
-                                                point1=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                                point2=(selectedX, selectedY),
+                                                startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
+                                                endPoint=(selectedX, selectedY),
                                                 color=userColor
                                                 )
 
@@ -166,6 +167,7 @@ def drawGUI():
 
         # Clicked on apply clipping button
         elif event == keys.MENU_APPLY_CLIPPING_KEY:
+            # Parse values for X and Y Limits
             try:
                 xmin = int(values[keys.MIN_X_VALUE_CLIPPING_KEY])
                 xmax = int(values[keys.MAX_X_VALUE_CLIPPING_KEY])
@@ -176,16 +178,18 @@ def drawGUI():
                                             msgTxt="Por favor, me dê coordenadas válidas para o recorte!", 
                                             buttonTxt="Ok!")
                 continue
-
-            clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
-            utils.clearCanvas(graph, config)
             
             xLimits = (xmin, xmax)
             yLimits = (ymin, ymax)
-
             previousX = userPoints.points["x"][0]
             previousY = userPoints.points["y"][0]
 
+            clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
+            functionClippingUserChoice  = functionMapClippingAlgorithm[clippingAlgorithmUserChoice]
+
+            # Clear canvas so we can only show the lines inside the clipping bounds
+            utils.clearCanvas(graph, config)
+            # Draw red rectangle to draw where the bounds are
             graph.DrawRectangle((xmin, ymin), (xmax, ymax), line_color="red")
 
             # idx because we need to access userUsedColors too
@@ -193,17 +197,29 @@ def drawGUI():
                 currentX = userPoints.points["x"][idx]
                 currentY = userPoints.points["y"][idx]
 
+                clippingResults = functionClippingUserChoice((previousX, previousY), 
+                                                             (currentX, currentY), 
+                                                             xLimits,
+                                                             yLimits)
 
-                isAccepted, ((previousX, previousY), (currentX, currentY)) = clipping_algorithms.cohenSutherland(   (previousX, previousY), 
-                                                                                                                    (currentX, currentY), 
-                                                                                                                    xLimits, 
-                                                                                                                    yLimits)
+                isAccepted, ((clippedX1, clippedY1), (clippedX2, clippedY2)) = clippingResults
 
                 if isAccepted:
-                    graph.DrawLine( point_from=(previousX, previousY),
-                                    point_to=(currentX, currentY),
-                                    color=userUsedColors[idx]
-                                )
+                    lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
+                    
+                    if lineAlgorithmUserChoice == "Padrão":
+                        graph.DrawLine(point_from=(clippedX1, clippedY1),
+                                       point_to=(clippedX2, clippedY2),
+                                       color=userUsedColors[idx]
+                                    )
+
+                    else:
+                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm(graph=graph,
+                                            startPoint=(clippedX1, clippedY1),
+                                            endPoint=(clippedX2, clippedY2),
+                                            color=userUsedColors[idx]
+                                            )
                 
                 # Update for the next loop
                 previousX = currentX
@@ -268,8 +284,8 @@ def drawGUI():
                 else:
                     functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
                     functionLineAlgorithm(  graph=graph,
-                                            point1=(previousX, previousY),
-                                            point2=(currentX, currentY),
+                                            startPoint=(previousX, previousY),
+                                            endPoint=(currentX, currentY),
                                             color=userUsedColors[idx]
                                             )
 

@@ -1,2 +1,0 @@
-def clipTest():
-    pass

@@ -1,18 +1,18 @@
-# This class was created to suit the needs for a way to store the points in a quick way as well
-# as providing fast and efficient lookup times.
+'''
+This class was created by me to suit the needs for a way to store the points in a quick way as well
+as providing fast and efficient lookup times.
 
-# The driving factor for implementing this was because we had a O(N) lookup time. 
-# When the user adds a new point to the canvas, it requires checking if it's already there
-# or we end up with duplicates. This verification required looping through the whole list of points 
-# and checking if it's already there, which gives us O(N) complexity.
+The reason this exists is because programming languages don't have a builtin structure 
+that provides O(1) times for lookup and insertion while maintaining the order of the insertions.
 
-# Changing the way we store points to a set also wouldn't work, as it needs to be ordered. When drawing the lines for a new point
-# we need to get the coordinates for the last one to maintain the shape of the object.
+The order in which the user inserts the points is crucial for calculating the starting and ending points
+when drawing a line. We can't lose track of that, so the natural implementation calls for a list. 
+But the problem with lists is that when we want to see if a point is already inserted to avoid duplicates, 
+we have to loop through the entire list to find if it exists, giving us O(N) time.
 
-# This class was imagined as a way to provide the best of both worlds. We store the elements in memory on a list to keep it ordered, but when looking
-# up if an element is already inserted we now can have this operation O(1) time. This implementations takes advantage of Python sets for this.
-# Under the hood the Python set uses a hashmap for lookups and avoid duplicates. The hashmap is one of the more powerful data structures, providing
-# O(1) lookup and write times, and now we can use these too.
+This PointStorer class that I made solves this problem, providing O(1) insertion and lookup times with standard
+Python types while also maintaining insertion order.
+'''
 
 
 class PointStorer:

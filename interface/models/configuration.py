@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 from interface.models import keys
 from graphics import translation, scale, rotation, shear, reflection
 from graphics.line_algorithms import drawLineDDA, drawLineBresenham
-
+from graphics.clipping_algorithms import cohenSutherland, liangBarsky
 
 class ConfigModel:
     def __init__(self) -> None:
@@ -29,6 +29,11 @@ class ConfigModel:
         self.functionMapLineAlgorithm = {
                             "DDA": drawLineDDA,
                             "Bresenham": drawLineBresenham
+        }
+
+        self.functionMapClippingAlgorithm = {
+                            "Cohen-Sutherland": cohenSutherland,
+                            "Liang-Barsky": liangBarsky
         }
 
         self.transformationOptions = [
@@ -62,8 +67,8 @@ class ConfigModel:
                 [sg.Text(self.lineAlgorithmOptions[0][0], pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(keys.MENU_CIRCLE_RADIUS_TEXT, pad=(self.textBoxSize,25))],
                 [sg.Text(keys.MENU_CIRCLE_NPOINTS_TEXT, pad=(self.textBoxSize,1))],
-                [sg.Text(keys.MIN_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_X_VALUE_CLIPPING_KEY)],
-                [sg.Text(keys.MIN_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_Y_VALUE_CLIPPING_KEY)],
+                [sg.Text(keys.MIN_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_X_VALUE_CLIPPING_KEY, default_text="-200")],
+                [sg.Text(keys.MIN_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_Y_VALUE_CLIPPING_KEY, default_text="-200")],
                 [sg.Text(keys.CHOOSE_CLIPPING_ALGORITHM_DROPDOWN_TEXT, pad=(self.textBoxSize,self.textBoxSize))]
                 ]
 
@@ -100,8 +105,8 @@ class ConfigModel:
                         key=keys.MENU_CIRCLE_NPOINTS_KEY
                 )
             ],
-            [sg.Text(keys.MAX_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MAX_X_VALUE_CLIPPING_KEY)],
-            [sg.Text(keys.MAX_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MAX_Y_VALUE_CLIPPING_KEY)],
+            [sg.Text(keys.MAX_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MAX_X_VALUE_CLIPPING_KEY, default_text="200")],
+            [sg.Text(keys.MAX_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MAX_Y_VALUE_CLIPPING_KEY, default_text="200")],
             [   sg.Push(),
                 sg.OptionMenu(
                     values=self.clippingAlgorithmOptions[0][1], 
