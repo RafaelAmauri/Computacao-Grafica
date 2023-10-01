@@ -157,6 +157,7 @@ def dda2d(  startPoint: Tuple[int, int],
     deltaY = int(y2 - y1)
 
     ddaPoints = PointStorer()
+    ddaPoints.add((roundDDA(x1), roundDDA(y1)))
 
     nSteps = abs(deltaX) if abs(deltaX) > abs(deltaY) else abs(deltaY)
     
@@ -165,7 +166,7 @@ def dda2d(  startPoint: Tuple[int, int],
     
     tempX = x1
     tempY = y1
-    for _ in range(nSteps+1):
+    for _ in range(nSteps):
         tempX += incrementX
         tempY += incrementY
 
