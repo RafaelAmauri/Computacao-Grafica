@@ -10,7 +10,7 @@ when drawing a line. We can't lose track of that, so the natural implementation 
 But the problem with lists is that when we want to see if a point is already inserted to avoid duplicates, 
 we have to loop through the entire list to find if it exists, giving us O(N) time.
 
-This PointStorer class that I made solves this problem, providing O(1) insertion and lookup times with standard
+This PointStorer object that I made solves this problem, providing O(1) insertion and lookup times with built-in
 Python types while also maintaining insertion order.
 '''
 
@@ -70,6 +70,17 @@ class PointStorer:
         newPoints.numPoints = self.numPoints
 
         return newPoints
+
+
+    def __str__(self):
+        string = f"Num points = {self.numPoints} [ "
+        
+        for px, py in zip(self.points["x"], self.points["y"]):
+            string += f"[{px}, {py}] "
+
+        string += "]"
+
+        return string
 
 
     def __iter__(self):
