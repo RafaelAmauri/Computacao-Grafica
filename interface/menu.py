@@ -17,8 +17,6 @@ def drawGUI():
     window = sg.Window('My Graphics Library', screens).finalize()
     graph  = window[keys.MENU_GRAPH_KEY]
 
-    
-
 
     # Stores points in a a memory-efficient manner providing fast access times as well as fast lookup times.
     # Check the documentation over at pointer_storer.py
@@ -26,7 +24,7 @@ def drawGUI():
 
     # We have to maintain color cohesion after the transforms, so we use this to store the order that the user
     # has drawn their lines
-    userUsedColors = []
+    userUsedColors = list()
 
     # Check config for default values
     functionMapTransformation    = config.functionMapTransformations
@@ -113,7 +111,6 @@ def drawGUI():
                                                 endPoint=(selectedX, selectedY),
                                                 color=userColor
                                                 )
-
 
                 userPoints.add((selectedX, selectedY))
                 userUsedColors.append(userColor)
@@ -234,6 +231,7 @@ def drawGUI():
             transformationUserChoice     = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY]
             axisUserChoice               = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
             rotationDirectionUserChoice  = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
+            
             try:
                 factorUserChoice             =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_FACTOR_KEY])
                 rotationAngleUserChoice      =  int(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY])
@@ -258,18 +256,9 @@ def drawGUI():
                                                             )
             
 
-
-            # Rewrote previous code to optimize this for loop. Here we remember
-            # the values of the previous iteration (in previousX,Y) to avoid having to access 
-            # the data in userPoints more than necessary. Before this we were 
-            # accessing each point 2x, now it's only once. 
-            # In addition to halfing the times we access memory, also
-            # removed one if statement which hopefully will translate to
-            # one less branch instruction in the assembly code.
             previousX = userPoints.points["x"][0]
             previousY = userPoints.points["y"][0]
             graph.DrawPoint((previousX, previousY), 10, color=userUsedColors[0])
-
             # idx because we need to access userUsedColors too
             for idx in range(1, userPoints.numPoints):
                 currentX = userPoints.points["x"][idx]
@@ -293,6 +282,13 @@ def drawGUI():
                 # Update for the next loop
                 previousX = currentX
                 previousY = currentY
+
+        elif event == keys.MENU_APPLY_FILL_KEY:
+            from graphics.fill_algorithms import boundaryFill, _boundaryFill
+
+            x = 0
+            y = 0
+            boundaryFill(graph, (x,y), userPoints, userUsedColors, "#000000")
 
 
     window.close()

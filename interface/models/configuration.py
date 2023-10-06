@@ -83,7 +83,7 @@ class ConfigModel:
             [sg.Push(), sg.Button(keys.MENU_DRAW_CIRCLE_TEXT, key=keys.MENU_DRAW_CIRCLE_KEY, size=self.buttonSize)],
             [sg.Push(), sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY, size=self.buttonSize)],
             [sg.Push(), sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, size=self.buttonSize, disabled=True)],
-            [sg.Push(), sg.Button(keys.MENU_APPLY_FILL_TEXT, key=keys.MENU_APPLY_FILL_TEXT, size=self.buttonSize)],
+            [sg.Push(), sg.Button(keys.MENU_APPLY_FILL_TEXT, key=keys.MENU_APPLY_FILL_KEY, size=self.buttonSize)],
             [sg.HSeparator()],
             [   sg.Push(),
                 sg.OptionMenu(
