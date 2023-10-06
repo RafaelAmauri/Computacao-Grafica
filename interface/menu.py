@@ -15,7 +15,9 @@ def drawGUI():
 
     # Create the Window
     window = sg.Window('My Graphics Library', screens).finalize()
-    graph = window[keys.MENU_GRAPH_KEY]
+    graph  = window[keys.MENU_GRAPH_KEY]
+
+    
 
 
     # Stores points in a a memory-efficient manner providing fast access times as well as fast lookup times.
@@ -36,7 +38,7 @@ def drawGUI():
     # Event Loop to process events and get the values of the inputs
     while True:
         event, values  = window.read()
-        
+
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
             break
@@ -52,7 +54,7 @@ def drawGUI():
                 
                 graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
                 
-                print(f"Drawed pixel on {selectedX}, {selectedY}")
+                print(f"Drew pixel on {selectedX}, {selectedY}")
 
                 # Se não for primeiro ponto, desenhar linha
                 if userPoints.numPoints > 0:
@@ -95,8 +97,7 @@ def drawGUI():
 
             if (selectedX, selectedY) not in userPoints:
                 graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
-
-                print(f"Drawed pixel on {selectedX}, {selectedY}")
+                print(f"Drew pixel on {selectedX}, {selectedY}")
 
                 # Algorithms have built-in functions that skip the operations if point1 and point2 are the same.
                 if userPoints.numPoints > 0:
