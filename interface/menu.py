@@ -55,38 +55,8 @@ def drawGUI():
             lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
             selectedX, selectedY = (int(v) for v in values[keys.MENU_GRAPH_KEY])
 
-            if (selectedX, selectedY) not in userPoints:
-                window[keys.X1_COORDINATES_BUTTON_KEY].Update(selectedX)
-                window[keys.Y1_COORDINATES_BUTTON_KEY].Update(selectedY)
-                
-                graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
-                
-                print(f"Drew pixel on {selectedX}, {selectedY}")
-
-                # Se não for primeiro ponto, desenhar linha
-                if userPoints.numPoints > 0:
-                    if lineAlgorithmUserChoice == "Padrão":
-                        graph.DrawLine(point_from=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                point_to=(selectedX, selectedY),
-                                color=userColor
-                                )
-
-
-                    else:
-                        functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
-                        functionLineAlgorithm(  graph=graph,
-                                                startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                                endPoint=(selectedX, selectedY),
-                                                color=userColor
-                                            )
-
-
-                userPoints.add((selectedX, selectedY))
-                userUsedColors.append(userColor)
-
-                window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
-
-
+            window[keys.X1_COORDINATES_BUTTON_KEY].Update(selectedX)
+            window[keys.Y1_COORDINATES_BUTTON_KEY].Update(selectedY)
 
                 
         # Clicked on Draw Pixel button
