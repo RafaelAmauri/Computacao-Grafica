@@ -21,7 +21,7 @@ Returns:
 def boundaryFill(graph, startPoint: Tuple[int, int], userPoints: PointStorer, userUsedColors: List, fillColor: str, canvasSize) -> None:
     coloredPoints = dict()
     canvasSizeX, canvasSizeY = canvasSize
-    
+
     print("Boundary Fill!")
 
     # Iterating over all points in userPoints and calculating intermediates with bresenham. Since we can't access
@@ -41,7 +41,6 @@ def boundaryFill(graph, startPoint: Tuple[int, int], userPoints: PointStorer, us
         # Update for the next loop
         previousX = currentX
         previousY = currentY
-    
 
     # Add starting point to the stack
     stack = [startPoint]
@@ -61,7 +60,6 @@ def boundaryFill(graph, startPoint: Tuple[int, int], userPoints: PointStorer, us
         ): 
             graph.DrawPoint((x, y), 10, color=fillColor)
             coloredPoints[f"{x}, {y}"] = fillColor
-            print(f"Filling {x}, {y}")
 
             # Add neighbors to the stack
             stack.append((x, y+1))
@@ -131,11 +129,10 @@ def floodFill(graph, startPoint: Tuple[int, int], userPoints: PointStorer, userU
         if (
             -canvasSizeX <= x <= canvasSizeX
             and -canvasSizeY <= y <= canvasSizeY
-            and startColor == colorPixel
+            and colorPixel == startColor
         ): 
             graph.DrawPoint((x, y), 10, color=fillColor)
             coloredPoints[f"{x}, {y}"] = fillColor
-            print(f"Filling {x}, {y}")
 
             # Add neighbors to the stack
             stack.append((x, y+1))
