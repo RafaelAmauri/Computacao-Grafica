@@ -3,6 +3,8 @@ from interface.models import keys
 from graphics import translation, scale, rotation, shear, reflection
 from graphics.line_algorithms import drawLineDDA, drawLineBresenham
 from graphics.clipping_algorithms import cohenSutherland, liangBarsky
+from graphics.fill_algorithms import boundaryFill, floodFill
+
 
 class ConfigModel:
     def __init__(self) -> None:
@@ -26,14 +28,19 @@ class ConfigModel:
                             "Reflexão": reflection.reflection2d
         }
 
-        self.functionMapLineAlgorithm = {
+        self.functionMapLineAlgorithms = {
                             "DDA": drawLineDDA,
                             "Bresenham": drawLineBresenham
         }
 
-        self.functionMapClippingAlgorithm = {
+        self.functionMapClippingAlgorithms = {
                             "Cohen-Sutherland": cohenSutherland,
                             "Liang-Barsky": liangBarsky
+        }
+
+        self.functionMapFillingAlgorithms = {
+                            "Boundary Fill": boundaryFill,
+                            "Flood Fill": floodFill
         }
 
         self.transformationOptions = [
@@ -45,11 +52,15 @@ class ConfigModel:
         ]
 
         self.lineAlgorithmOptions = [
-            [keys.CHOOSE_LINE_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_LINE_ALGORITHM_CHOICE_1, keys.CHOOSE_LINE_ALGORITHM_CHOICE_2, keys.CHOOSE_LINE_ALGORITHM_CHOICE_3]]
+            keys.CHOOSE_LINE_ALGORITHM_CHOICE_1, keys.CHOOSE_LINE_ALGORITHM_CHOICE_2, keys.CHOOSE_LINE_ALGORITHM_CHOICE_3
         ]
 
         self.clippingAlgorithmOptions = [
             [keys.CHOOSE_CLIPPING_ALGORITHM_DROPDOWN_TEXT, [keys.CHOOSE_CLIPPING_ALGORITHM_CHOICE_1, keys.CHOOSE_CLIPPING_ALGORITHM_CHOICE_2]]
+        ]
+
+        self.fillAlgorithmsOptions = [
+            keys.CHOOSE_FILL_ALGORITHM_CHOICE_1, keys.CHOOSE_FILL_ALGORITHM_CHOICE_2
         ]
   
         self.layoutLeft = [
@@ -64,12 +75,13 @@ class ConfigModel:
                 [sg.Button(keys.MENU_SELECT_COLOR_TEXT, key=keys.MENU_SELECT_COLOR_KEY, size=self.buttonSize)],
                 [sg.Button(keys.MENU_APPLY_CLIPPING_TEXT, key=keys.MENU_APPLY_CLIPPING_KEY, size=self.buttonSize)],
                 [sg.HSeparator()],
-                [sg.Text(self.lineAlgorithmOptions[0][0], pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(keys.CHOOSE_LINE_ALGORITHM_DROPDOWN_TEXT, pad=(self.textBoxSize,self.textBoxSize))],
                 [sg.Text(keys.MENU_CIRCLE_RADIUS_TEXT, pad=(self.textBoxSize,25))],
                 [sg.Text(keys.MENU_CIRCLE_NPOINTS_TEXT, pad=(self.textBoxSize,1))],
                 [sg.Text(keys.MIN_X_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_X_VALUE_CLIPPING_KEY, default_text="-200")],
                 [sg.Text(keys.MIN_Y_VALUE_CLIPPING_TEXT, pad=(self.textBoxSize,self.textBoxSize)), sg.Push(), sg.InputText(size=self.inputboxSize, key=keys.MIN_Y_VALUE_CLIPPING_KEY, default_text="-200")],
-                [sg.Text(keys.CHOOSE_CLIPPING_ALGORITHM_DROPDOWN_TEXT, pad=(self.textBoxSize,self.textBoxSize))]
+                [sg.Text(keys.CHOOSE_CLIPPING_ALGORITHM_DROPDOWN_TEXT, pad=(self.textBoxSize,self.textBoxSize))],
+                [sg.Text(keys.CHOOSE_FILL_ALGORITHM_DROPDOWN_TEXT,     pad=(self.textBoxSize,self.textBoxSize))]
                 ]
 
         self.layoutMiddle2 = [
@@ -77,11 +89,12 @@ class ConfigModel:
             [sg.HSeparator()],
             [sg.Push(), sg.Button(keys.MENU_DRAW_CIRCLE_TEXT, key=keys.MENU_DRAW_CIRCLE_KEY, size=self.buttonSize)],
             [sg.Push(), sg.Button(keys.MENU_ERASE_ALL_TEXT, key=keys.MENU_ERASE_ALL_KEY, size=self.buttonSize)],
-            [sg.Push(), sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, pad=((0,5),(3,39)), size=self.buttonSize, disabled=True)],
+            [sg.Push(), sg.Button(keys.MENU_APPLY_TRANSFORMATION_TEXT, key=keys.MENU_APPLY_TRANSFORMATION_KEY, size=self.buttonSize, disabled=True)],
+            [sg.Push(), sg.Button(keys.MENU_APPLY_FILL_TEXT, key=keys.MENU_APPLY_FILL_KEY, size=self.buttonSize)],
             [sg.HSeparator()],
             [   sg.Push(),
                 sg.OptionMenu(
-                    values=self.lineAlgorithmOptions[0][1], 
+                    values=self.lineAlgorithmOptions, 
                     size=self.inputboxSize, 
                     default_value=keys.CHOOSE_LINE_ALGORITHM_DEFAULT_OPTION, 
                     key=keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY
@@ -115,6 +128,14 @@ class ConfigModel:
                     key=keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY
                 )
             ],
+            [   sg.Push(),
+                sg.OptionMenu(
+                    values=self.fillAlgorithmsOptions, 
+                    size=self.inputboxSize, 
+                    default_value=keys.CHOOSE_FILL_ALGORITHM_DEFAULT_OPTION, 
+                    key=keys.CHOOSE_FILL_ALGORITHM_CHOSEN_OPTION_KEY
+                )
+            ]
         ]
 
         self.layoutRight1 = [

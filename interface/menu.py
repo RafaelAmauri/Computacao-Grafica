@@ -3,8 +3,9 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys
 from interface.screens import choose_color
 
-from graphics import point_storer, circle, clipping_algorithms
+from graphics import point_storer, circle
 from utils import utils
+
 
 def drawGUI():
     sg.theme('DarkAmber') # Add a touch of color
@@ -15,7 +16,7 @@ def drawGUI():
 
     # Create the Window
     window = sg.Window('My Graphics Library', screens).finalize()
-    graph = window[keys.MENU_GRAPH_KEY]
+    graph  = window[keys.MENU_GRAPH_KEY]
 
 
     # Stores points in a a memory-efficient manner providing fast access times as well as fast lookup times.
@@ -24,19 +25,27 @@ def drawGUI():
 
     # We have to maintain color cohesion after the transforms, so we use this to store the order that the user
     # has drawn their lines
-    userUsedColors = []
+    userUsedColors = list()
 
     # Check config for default values
-    functionMapTransformation    = config.functionMapTransformations
-    functionMapLineAlgorithm     = config.functionMapLineAlgorithm
-    functionMapClippingAlgorithm = config.functionMapClippingAlgorithm
-    userColor                    = config.defaultUserColor
+    functionMapTransformations    = config.functionMapTransformations
+    functionMapLineAlgorithms     = config.functionMapLineAlgorithms
+    functionMapClippingAlgorithms = config.functionMapClippingAlgorithms
+    functionMapFillingAlgorithms  = config.functionMapFillingAlgorithms
+    userColor                     = config.defaultUserColor
+    
 
     window.move_to_center()
+    
     # Event Loop to process events and get the values of the inputs
     while True:
         event, values  = window.read()
         
+        #pixel_color = canvas.winfo_rgb("white")  # Default color if out of canvas bounds
+        #pixel_color = photo_image.get(x, y)
+        #print(pixel_color)
+        
+
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
             break
@@ -46,38 +55,8 @@ def drawGUI():
             lineAlgorithmUserChoice = values[keys.CHOOSE_LINE_ALGORITHM_CHOSEN_OPTION_KEY]
             selectedX, selectedY = (int(v) for v in values[keys.MENU_GRAPH_KEY])
 
-            if (selectedX, selectedY) not in userPoints:
-                window[keys.X1_COORDINATES_BUTTON_KEY].Update(selectedX)
-                window[keys.Y1_COORDINATES_BUTTON_KEY].Update(selectedY)
-                
-                graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
-                
-                print(f"Drawed pixel on {selectedX}, {selectedY}")
-
-                # Se não for primeiro ponto, desenhar linha
-                if userPoints.numPoints > 0:
-                    if lineAlgorithmUserChoice == "Padrão":
-                        graph.DrawLine(point_from=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                point_to=(selectedX, selectedY),
-                                color=userColor
-                                )
-
-
-                    else:
-                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
-                        functionLineAlgorithm(  graph=graph,
-                                                startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
-                                                endPoint=(selectedX, selectedY),
-                                                color=userColor
-                                            )
-
-
-                userPoints.add((selectedX, selectedY))
-                userUsedColors.append(userColor)
-
-                window[keys.MENU_APPLY_TRANSFORMATION_KEY].Update(disabled=False)
-
-
+            window[keys.X1_COORDINATES_BUTTON_KEY].Update(selectedX)
+            window[keys.Y1_COORDINATES_BUTTON_KEY].Update(selectedY)
 
                 
         # Clicked on Draw Pixel button
@@ -95,8 +74,7 @@ def drawGUI():
 
             if (selectedX, selectedY) not in userPoints:
                 graph.DrawPoint((selectedX, selectedY), 10, color=userColor)
-
-                print(f"Drawed pixel on {selectedX}, {selectedY}")
+                print(f"Drew pixel on {selectedX}, {selectedY}")
 
                 # Algorithms have built-in functions that skip the operations if point1 and point2 are the same.
                 if userPoints.numPoints > 0:
@@ -106,13 +84,12 @@ def drawGUI():
                                         color=userColor
                                         )
                     else:
-                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                         functionLineAlgorithm(  graph=graph,
                                                 startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
                                                 endPoint=(selectedX, selectedY),
                                                 color=userColor
                                                 )
-
 
                 userPoints.add((selectedX, selectedY))
                 userUsedColors.append(userColor)
@@ -183,7 +160,7 @@ def drawGUI():
             yLimits = (ymin, ymax)
 
             clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
-            functionClippingUserChoice  = functionMapClippingAlgorithm[clippingAlgorithmUserChoice]
+            functionClippingUserChoice  = functionMapClippingAlgorithms[clippingAlgorithmUserChoice]
             # Clear canvas so we can only show the lines inside the clipping bounds
             utils.clearCanvas(graph, config)
             # Draw red rectangle to draw where the bounds are
@@ -214,7 +191,7 @@ def drawGUI():
                                     )
 
                     else:
-                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                         functionLineAlgorithm(graph=graph,
                                             startPoint=(clippedX1, clippedY1),
                                             endPoint=(clippedX2, clippedY2),
@@ -233,6 +210,7 @@ def drawGUI():
             transformationUserChoice     = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_TRANSFORMATION_KEY]
             axisUserChoice               = values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY].lower() if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_AXIS_KEY] in ["X", "Y"] else "both"
             rotationDirectionUserChoice  = "clockwise" if values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_DIRECTION_KEY] == "Horário" else "anticlockwise"
+            
             try:
                 factorUserChoice             =  float(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_FACTOR_KEY])
                 rotationAngleUserChoice      =  int(values[keys.CHOOSE_TRANSFORMATION_OPTION_CHOSEN_ROTATION_ANGLE_KEY])
@@ -246,7 +224,7 @@ def drawGUI():
 
             # Maps the transformation the user chose on the GUI to a function. The binds can
             # be checked over at configuration.py.
-            functionTransformationUserChoice = functionMapTransformation[transformationUserChoice]
+            functionTransformationUserChoice = functionMapTransformations[transformationUserChoice]
 
             # Calculates the new points after performing the transformation
             userPoints = functionTransformationUserChoice(  figure=userPoints,
@@ -257,18 +235,9 @@ def drawGUI():
                                                             )
             
 
-
-            # Rewrote previous code to optimize this for loop. Here we remember
-            # the values of the previous iteration (in previousX,Y) to avoid having to access 
-            # the data in userPoints more than necessary. Before this we were 
-            # accessing each point 2x, now it's only once. 
-            # In addition to halfing the times we access memory, also
-            # removed one if statement which hopefully will translate to
-            # one less branch instruction in the assembly code.
             previousX = userPoints.points["x"][0]
             previousY = userPoints.points["y"][0]
             graph.DrawPoint((previousX, previousY), 10, color=userUsedColors[0])
-
             # idx because we need to access userUsedColors too
             for idx in range(1, userPoints.numPoints):
                 currentX = userPoints.points["x"][idx]
@@ -282,7 +251,7 @@ def drawGUI():
                                 )
 
                 else:
-                    functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                    functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                     functionLineAlgorithm(  graph=graph,
                                             startPoint=(previousX, previousY),
                                             endPoint=(currentX, currentY),
@@ -292,6 +261,28 @@ def drawGUI():
                 # Update for the next loop
                 previousX = currentX
                 previousY = currentY
+
+
+        elif event == keys.MENU_APPLY_FILL_KEY:
+            try:
+                selectedX = int(values[keys.X1_COORDINATES_BUTTON_KEY])
+                selectedY = int(values[keys.Y1_COORDINATES_BUTTON_KEY])
+            except ValueError:
+                utils.createPopupOneButton(windowName="Error", 
+                                            msgTxt="Por favor, me dê coordenadas X e Y válidas para um ponto inicial!", 
+                                            buttonTxt="Ok!")
+                continue
+
+            fillingAlgorithmUserChoice         = values[keys.CHOOSE_FILL_ALGORITHM_CHOSEN_OPTION_KEY]
+            functionFillingAlgorithmUserChoice = functionMapFillingAlgorithms[fillingAlgorithmUserChoice]
+            
+            functionFillingAlgorithmUserChoice(graph,
+                                            (selectedX,selectedY),
+                                            userPoints,
+                                            userUsedColors,
+                                            userColor,
+                                            config.canvasSize
+                                            )
 
 
     window.close()
