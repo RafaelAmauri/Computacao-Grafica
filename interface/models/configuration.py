@@ -3,6 +3,8 @@ from interface.models import keys
 from graphics import translation, scale, rotation, shear, reflection
 from graphics.line_algorithms import drawLineDDA, drawLineBresenham
 from graphics.clipping_algorithms import cohenSutherland, liangBarsky
+from graphics.fill_algorithms import boundaryFill, floodFill
+
 
 class ConfigModel:
     def __init__(self) -> None:
@@ -26,14 +28,19 @@ class ConfigModel:
                             "Reflexão": reflection.reflection2d
         }
 
-        self.functionMapLineAlgorithm = {
+        self.functionMapLineAlgorithms = {
                             "DDA": drawLineDDA,
                             "Bresenham": drawLineBresenham
         }
 
-        self.functionMapClippingAlgorithm = {
+        self.functionMapClippingAlgorithms = {
                             "Cohen-Sutherland": cohenSutherland,
                             "Liang-Barsky": liangBarsky
+        }
+
+        self.functionMapFillingAlgorithms = {
+                            "Boundary Fill": boundaryFill,
+                            "Flood Fill": floodFill
         }
 
         self.transformationOptions = [

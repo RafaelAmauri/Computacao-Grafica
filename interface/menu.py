@@ -3,8 +3,9 @@ import PySimpleGUI as sg
 from interface.models import configuration, keys
 from interface.screens import choose_color
 
-from graphics import point_storer, circle, clipping_algorithms
+from graphics import point_storer, circle
 from utils import utils
+
 
 def drawGUI():
     sg.theme('DarkAmber') # Add a touch of color
@@ -27,15 +28,23 @@ def drawGUI():
     userUsedColors = list()
 
     # Check config for default values
-    functionMapTransformation    = config.functionMapTransformations
-    functionMapLineAlgorithm     = config.functionMapLineAlgorithm
-    functionMapClippingAlgorithm = config.functionMapClippingAlgorithm
-    userColor                    = config.defaultUserColor
+    functionMapTransformations    = config.functionMapTransformations
+    functionMapLineAlgorithms     = config.functionMapLineAlgorithms
+    functionMapClippingAlgorithms = config.functionMapClippingAlgorithms
+    functionMapFillingAlgorithms  = config.functionMapFillingAlgorithms
+    userColor                     = config.defaultUserColor
+    
 
     window.move_to_center()
+    
     # Event Loop to process events and get the values of the inputs
     while True:
         event, values  = window.read()
+        
+        #pixel_color = canvas.winfo_rgb("white")  # Default color if out of canvas bounds
+        #pixel_color = photo_image.get(x, y)
+        #print(pixel_color)
+        
 
         # Clicked on "Exit"
         if event in [keys.MENU_CLOSE_KEY, sg.WIN_CLOSED]:
@@ -64,7 +73,7 @@ def drawGUI():
 
 
                     else:
-                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                         functionLineAlgorithm(  graph=graph,
                                                 startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
                                                 endPoint=(selectedX, selectedY),
@@ -105,7 +114,7 @@ def drawGUI():
                                         color=userColor
                                         )
                     else:
-                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                         functionLineAlgorithm(  graph=graph,
                                                 startPoint=(userPoints.points["x"][-1], userPoints.points["y"][-1]),
                                                 endPoint=(selectedX, selectedY),
@@ -181,7 +190,7 @@ def drawGUI():
             yLimits = (ymin, ymax)
 
             clippingAlgorithmUserChoice = values[keys.CHOOSE_CLIPPING_ALGORITHM_CHOSEN_OPTION_KEY]
-            functionClippingUserChoice  = functionMapClippingAlgorithm[clippingAlgorithmUserChoice]
+            functionClippingUserChoice  = functionMapClippingAlgorithms[clippingAlgorithmUserChoice]
             # Clear canvas so we can only show the lines inside the clipping bounds
             utils.clearCanvas(graph, config)
             # Draw red rectangle to draw where the bounds are
@@ -212,7 +221,7 @@ def drawGUI():
                                     )
 
                     else:
-                        functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                        functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                         functionLineAlgorithm(graph=graph,
                                             startPoint=(clippedX1, clippedY1),
                                             endPoint=(clippedX2, clippedY2),
@@ -245,7 +254,7 @@ def drawGUI():
 
             # Maps the transformation the user chose on the GUI to a function. The binds can
             # be checked over at configuration.py.
-            functionTransformationUserChoice = functionMapTransformation[transformationUserChoice]
+            functionTransformationUserChoice = functionMapTransformations[transformationUserChoice]
 
             # Calculates the new points after performing the transformation
             userPoints = functionTransformationUserChoice(  figure=userPoints,
@@ -272,7 +281,7 @@ def drawGUI():
                                 )
 
                 else:
-                    functionLineAlgorithm = functionMapLineAlgorithm[lineAlgorithmUserChoice]
+                    functionLineAlgorithm = functionMapLineAlgorithms[lineAlgorithmUserChoice]
                     functionLineAlgorithm(  graph=graph,
                                             startPoint=(previousX, previousY),
                                             endPoint=(currentX, currentY),
@@ -283,12 +292,27 @@ def drawGUI():
                 previousX = currentX
                 previousY = currentY
 
-        elif event == keys.MENU_APPLY_FILL_KEY:
-            from graphics.fill_algorithms import boundaryFill, _boundaryFill
 
-            x = 0
-            y = 0
-            boundaryFill(graph, (x,y), userPoints, userUsedColors, "#000000")
+        elif event == keys.MENU_APPLY_FILL_KEY:
+            try:
+                selectedX = int(values[keys.X1_COORDINATES_BUTTON_KEY])
+                selectedY = int(values[keys.Y1_COORDINATES_BUTTON_KEY])
+            except ValueError:
+                utils.createPopupOneButton(windowName="Error", 
+                                            msgTxt="Por favor, me dê coordenadas X e Y válidas para um ponto inicial!", 
+                                            buttonTxt="Ok!")
+                continue
+
+            fillingAlgorithmUserChoice         = values[keys.CHOOSE_FILL_ALGORITHM_CHOSEN_OPTION_KEY]
+            functionFillingAlgorithmUserChoice = functionMapFillingAlgorithms[fillingAlgorithmUserChoice]
+            
+            functionFillingAlgorithmUserChoice(graph,
+                                            (selectedX,selectedY),
+                                            userPoints,
+                                            userUsedColors,
+                                            userColor,
+                                            config.canvasSize
+                                            )
 
 
     window.close()
